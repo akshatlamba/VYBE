@@ -1,0 +1,247 @@
+--- PAGE 1 ---
+PRASUNEX INNOVATHON 2026 | ROUND 2
+VYBE 2.0
+Student Opportunity & Growth Intelligence
+THE PROMISE From finding opportunities to turning them into measurable growth.
+TEAM CODE STORM Piyush · Aashi · Akshat · Anugrah · Ashutosh
+SUBMISSION Detailed solution design • Technical architecture • Implementation strategy
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 01
+--- PAGE 2 ---
+01 / PROBLEM
+The problem is bigger than discovery
+Students can find opportunities. What they often lack is a clear path from opportunity to outcome.
+FRAGMENTED DISCOVERY
+UNCLEAR PERSONAL FIT
+Posters, portals, social posts and college groups split information across channels.
+Eligibility, cost, schedule and required skills are difficult to evaluate together.
+NO READINESS GUIDANCE
+LOST LEARNING TRAIL
+Students may know an event exists but not what they need to prepare.
+Participation and skills gained are rarely connected to the next useful opportunity.
+Proposed design. Prototype scope and performance claims will be validated during implementation.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 02
+--- PAGE 3 ---
+02 / POSITIONING
+A different category of platform
+VYBE is an intelligence layer that helps a student decide, prepare, act, document and improve.
+TYPICAL LISTING EXPERIENCE
+VYBE 2.0 EXPERIENCE
+Browse a catalogue → filter by date/category → verify
+details elsewhere → apply or attend → start the next
+search from zero.
+Build a growth profile → see explainable matches →
+understand readiness gaps → track actions → record
+outcomes → improve future guidance.
+Proposed design. Prototype scope and performance claims will be validated during implementation.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 OUR POSITION
+Complement existing opportunity sources. Compete on
+decision intelligence and continuity—not on having the
+biggest listings catalogue.
+03
+--- PAGE 4 ---
+03 / PRODUCT WORKFLOW
+One connected student journey
+Each stage produces structured information that makes the next stage more useful.
+01 PROFILE
+02 DISCOVER
+Interests, goals, skills, academic year, budget and availability.
+Curated opportunities with source, deadline, format and eligibility.
+04 PREPARE
+05 RECORD
+Personal checklist, timeline and application tracker.
+Participation, evidence, reflection and skills gained.
+Proposed design. Prototype scope and performance claims will be validated during implementation.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 03 ASSESS
+Explainable fit score, eligibility checks and readiness gaps.
+06 GROW
+Next-step recommendations informed by student outcomes.
+04
+--- PAGE 5 ---
+04 / DIFFERENTIATION
+Five capabilities that make VYBE different
+The differentiator is the complete opportunity-to-outcome loop—not a generic AI chat interface.
+A EXPLAINABLE FIT
+B READINESS ANALYSIS
+C ACTION TRACKER
+Show why an opportunity matches: interests, goals, schedule,
+budget and eligibility.
+Separate eligibility from readiness; identify missing prerequisites
+and preparation tasks.
+Track deadlines, application stages, tasks, team formation and
+follow-ups.
+D PROOF-OF-GROWTH PASSPORT
+E OUTCOME-AWARE GUIDANCE
+Create a structured record of completed work, participation and
+evidence.
+Use verified or student-confirmed outcomes to shape the next
+recommendations.
+Proposed design. Prototype scope and performance claims will be validated during implementation.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 05
+--- PAGE 6 ---
+05 / SYSTEM DESIGN
+Technical architecture
+A modular web platform with deterministic core logic and AI used only where it adds value.
+STUDENT PWA
+Profile • Discover • Compare • Tracker • Growth Passport
+APPLICATION LAYER
+Next.js UI + server/API routes • validation • role-based access
+DATA & STORAGE
+Supabase Auth • PostgreSQL • Supabase Storage • audit events
+OPTIONAL AI SERVICES
+Opportunity summaries • reflection structuring • natural-language
+search with guardrails
+Proposed design. Prototype scope and performance claims will be validated during implementation.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 INTELLIGENCE SERVICES
+Eligibility rules • explainable ranking • readiness checklist •
+outcome signals
+PROPOSED STACK
+Next.js PWA · Supabase Auth · PostgreSQL · Supabase Storage ·
+rules-based recommendation engine
+06
+--- PAGE 7 ---
+06 / RECOMMENDATION LOGIC
+How matching stays explainable
+First remove opportunities the student cannot apply for. Then rank the remaining options with visible reasons.
+1 HARD ELIGIBILITY
+Academic year • department • location • deadline • mandatory
+criteria. Ineligible opportunities are excluded.
+2 WEIGHTED FIT
+Illustrative weights: interests 30% • goals 25% • budget 15% •
+schedule 15% • format 10% • level 5%.
+3 READINESS
+Prerequisites met • skills to strengthen • time to prepare • checklist
+completion.
+EXAMPLE OUTPUT
+86/100 fit | Eligible | Readiness: 3 of 4 preparation items complete.
+VALIDATION NOTE
+Weights are configurable design assumptions, not validated
+performance claims. Tune them through pilot feedback.
+Proposed design. Prototype scope and performance claims will be validated during implementation.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 07
+--- PAGE 8 ---
+07 / ENGINEERING DETAIL
+Data model & key services
+The data model connects a student's profile to opportunities, actions and evidence over time.
+CORE ENTITIES
+Student profile • skills and goals • opportunity • application • task •
+outcome • evidence • institution.
+OPPORTUNITY RECORD
+Organizer, source URL, dates, cost, format, eligibility criteria,
+status and last-checked timestamp.
+APPLICATION RECORD
+Student, opportunity, application stage, tasks, deadlines, notes and
+activity history.
+OUTCOME RECORD
+Participation, reflection, skills gained, evidence attachment and
+verification state.
+CORE API SURFACE
+GET /opportunities/recommended · POST /profile · POST
+/applications · GET /opportunities/{id}/readiness · POST /outcomes
+· GET /institution/analytics
+Proposed design. Prototype scope and performance claims will be validated during implementation.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 08
+--- PAGE 9 ---
+08 / RESPONSIBLE DESIGN
+Trust, verification & privacy
+Trust is part of the product architecture—not a final checklist.
+SOURCE TRACEABILITY
+Store source URL, organizer, last-checked time and listing status.
+Flag stale details.
+HONEST ACHIEVEMENTS
+Separate self-reported, evidence-attached and organizer-verified
+outcomes. Never label all as verified.
+STUDENT CONTROL
+Let students edit profile details, choose what to share and remove
+optional evidence.
+ROLE-BASED ACCESS
+Separate student, institution staff and admin permissions;
+institutional views are aggregated.
+SAFE AI BOUNDARIES
+AI may summarize or suggest. Eligibility, ranking and status
+changes remain rule-checked and reviewable.
+Proposed design. Prototype scope and performance claims will be validated during implementation.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 09
+--- PAGE 10 ---
+09 / SCOPE CONTROL
+MVP: what we will actually build
+One complete, credible student journey is more valuable than many disconnected features.
+IN THE ROUND 3 MVP
+LATER / NOT REQUIRED FOR MVP
+Student profile • seeded opportunity catalogue with source
+links • eligibility filters • explainable fit ranking • readiness
+checklist • application tracker • Opportunity Receipt • basic
+Growth Passport • small institution dashboard.
+Live integrations with every event platform • automatic
+external verification • native mobile apps • large-scale
+collaborative filtering • complex autonomous agents •
+multi-campus rollout.
+Proposed design. Prototype scope and performance claims will be validated during implementation.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 DEMO HONESTY
+Prototype data will be labelled as sample data. The demo
+will not imply partnerships or integrations that do not exist.
+10
+--- PAGE 11 ---
+10 / DELIVERY ROADMAP
+Implementation plan for Round 3
+Build order prioritizes one complete student journey over a wide but disconnected feature set.
+DAYS 1–2 FOUNDATION
+Database schema, authentication, student profile and opportunity
+seed data.
+DAYS 3–4 INTELLIGENCE
+Eligibility engine, explainable ranking, readiness analysis and
+comparison.
+DAYS 5–6 ACTION LOOP
+Application tracker, tasks, Opportunity Receipt and outcome
+capture.
+DAY 7 GROWTH LAYER
+Passport, evidence states and basic institution analytics.
+DAY 8 QUALITY & DEMO
+Integration tests, sample scenarios, UX polish, security checks and
+pitch rehearsal.
+Proposed design. Prototype scope and performance claims will be validated during implementation.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 11
+--- PAGE 12 ---
+11 / VALIDATION
+How we will test whether it works
+Measure decision quality and workflow completion—not just page views.
+MATCH QUALITY Review top recommendations against a labelled sample with students or mentors.
+ELIGIBILITY ACCURACY Check whether displayed opportunities pass mandatory criteria.
+EXPLANATION CLARITY Test whether users can explain why an opportunity was recommended.
+TASK COMPLETION Measure checklist completion and application-stage updates.
+DATA FRESHNESS Track active listings with a recent source check and valid deadline.
+RISKS & MITIGATIONS Stale listings → source checks and expiry. Cold start → short onboarding. False verification → explicit evidence states. Biased ranking → visible reasons and user overrides.
+NO UNPROVEN CLAIMS Proposed design. Prototype scope and performance claims will be validated during implementation.
+Set numeric targets after a pilot baseline; claim no impact or accuracy result before testing.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 12
+--- PAGE 13 ---
+12 / SCALABILITY & ADOPTION
+Scale through a campus-first model
+Start narrow, validate the workflow, then expand institutional capability.
+PHASE 1 · ONE CAMPUS
+Validate the student workflow with a curated catalogue and a small
+pilot group.
+PHASE 2 · CAMPUS NETWORK
+Add institution-managed opportunity feeds, staff roles and
+aggregated engagement views.
+STUDENT VALUE
+Better-fit choices, clearer preparation and a portable record of
+growth.
+COLLEGE VALUE
+Visibility into engagement patterns and areas where students need
+support.
+Proposed design. Prototype scope and performance claims will be validated during implementation.
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 PHASE 3 · MULTI-INSTITUTION
+Support configurable eligibility rules, institution boundaries and
+shared opportunity standards.
+ORGANIZER VALUE
+A clearer route to reach eligible, interested participants—subject to
+student opt-in.
+13
+--- PAGE 14 ---
+PRASUNEX INNOVATHON 2026 | ROUND 2
+Make every opportunity count.
+VYBE 2.0 turns fragmented discovery into a continuous student growth journey.
+OUR LOOP Discover with purpose. Prepare with clarity. Prove your progress. Grow from experience.
+CODE STORM Piyush · Aashi · Akshat · Anugrah · Ashutosh
+THANK YOU Questions & discussion
+VYBE 2.0 / CODE STORM / PRASUNEX INNOVATHON 2026 14

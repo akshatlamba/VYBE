@@ -1,0 +1,249 @@
+--- PAGE 1 ---
+￼
+￼
+￼
+The world moves fast. Students need a direction.
+VYBE
+Your World. Your Guide. Your Growth.
+An AI-powered Student Growth Ecosystem.
+Team Code Storm | Prasunex Innovathon — Round 3
+--- PAGE 2 ---
+VYBE · Code Storm · Prasunex Innovathon Round 3
+More information. More opportunities. Still no
+clear next step.
+News & trends
+Opportunity
+portals
+Projects &
+portfolios
+Certificates &
+records
+Next step?
+01
+Too much information to
+filter.
+02
+Opportunities found, but no
+clear next step.
+03
+Skills, projects and
+achievements scattered
+across platforms.
+2
+--- PAGE 3 ---
+VYBE · Code Storm · Prasunex Innovathon Round 3
+From knowing what's happening to knowing what
+to do.
+1
+￼
+WORLD PULSE
+What's changing in the
+world, with source and
+date.
+2
+￼
+PULSE
+Explains why it matters
+to you, in simple
+language.
+3
+￼
+ACTION PLAN
+A concrete next step:
+learn, build or apply.
+4
+GROWTH PASSPORT
+Progress and proof,
+recorded as you go.
+￼
+One continuous loop. Progress feeds the next signal.
+3
+--- PAGE 4 ---
+VYBE · Code Storm · Prasunex Innovathon Round 3
+We don't just show what's trending. We show
+what it means for you.
+￼
+GLOBAL SIGNAL
+￼
+AI agents start
+appearing inside
+everyday apps.
+STUDENT CONTEXT
+￼
+Beginner. Knows
+basic Python.
+Wants an
+internship.
+PULSE INTELLIGENCE
+￼
+Explains why it
+matters: small
+agent projects are
+a realistic way in.
+PERSONALISED
+ACTION
+￼
+Learn the basics,
+build one small
+agent, try a
+beginner
+hackathon.
+MEASURABLE
+PROGRESS
+Project and
+evidence logged in
+the Growth
+Passport.
+SAME SIGNAL. DIFFERENT NEXT STEP. Illustrative scenario
+Beginner · wants an internship
+Build a first small agent project.
+Business-minded · wants to start up
+Map the trend to a real problem and
+prepare a pitch.
+Advanced · wants research
+Reproduce a recent idea; contribute
+to an open project.
+4
+--- PAGE 5 ---
+VYBE · Code Storm · Prasunex Innovathon Round 3
+Not another chatbot. A guide that knows your
+next step.
+Student-aware context
+Answers start from your goals, skills and
+interests.
+Explainable recommendations
+Every suggestion says why it fits you.
+Action-linked guidance
+Advice turns into steps inside VYBE.
+Conceptual mockup. Not a screenshot of a
+working feature.
+￼
+￼
+￼
+￼
+PULSE
+I'm interested in AI, but I'm still a beginner.
+Where should I start?
+￼
+A simple path for a beginner, built around your goal:
+1 Learn: Python fundamentals
+2 Build: a small project you can show
+3 Explore: one beginner-friendly opportunity
+Why this: matched to your goal, skill level and interests
+Add to Action Plan → See opportunities
+Ask PULSE anything…
+5
+--- PAGE 6 ---
+VYBE · Code Storm · Prasunex Innovathon Round 3
+Discovery is easy. Knowing you're ready is the
+real challenge.
+OPPORTUNITY RADAR GROWTH PASSPORT
+1
+￼
+DISCOVER
+OPPORTUNITY
+Relevant events,
+matched to you.
+2
+￼
+CHECK ELIGIBILITY
+Deadlines and
+requirements,
+checked.
+3
+￼
+IDENTIFY SKILL
+GAPS
+What's missing,
+made visible.
+4
+￼
+PREPARE
+A short plan to
+close the gaps.
+5
+￼
+APPLY
+Apply with
+confidence.
+6
+RECORD
+PROGRESS
+Outcome and
+evidence,
+recorded.
+Opportunity Radar labels every listing as Sourced or
+Unverified.
+Growth Passport labels every record as Self-reported,
+Link-supported or Verified.
+6
+--- PAGE 7 ---
+VYBE · Code Storm · Prasunex Innovathon Round 3
+One student profile. Multiple connected
+intelligence layers.
+STUDENT EXPERIENCE Website
+￼
+Onboarding
+￼
+Dashboard
+￼
+PULSE interface
+￼
+APPLICATION / API APIs
+￼
+Student profile
+￼
+Opportunities
+￼
+Progress
+￼
+INTELLIGENCE &
+RECOMMENDATION AI orchestration
+￼
+Relevance logic
+￼
+Readiness
+assessment
+￼
+Action planning
+￼
+DATABASE & EXTERNAL
+DATA Student data Trends Opportunities Projects &
+evidence
+Proposed, conceptual architecture. Technology choices to be confirmed.
+7
+--- PAGE 8 ---
+VYBE · Code Storm · Prasunex Innovathon Round 3
+Discover. Prepare. Build. Prove. Repeat.
+MVP
+Student context
+World Pulse
+PULSE
+Action recommendations
+Opportunity readiness
+Growth Passport
+NEXT
+More tested languages
+Daily Growth Missions
+Team matching
+Better opportunity intelligence
+FUTURE
+Mentor Bridge
+Campus Intelligence
+Expanded integrations
+TEAM
+Akshat
+Frontend Developer
+Aashi
+Frontend Developer +
+Pitch
+Ashutosh
+UI/UX Designer
+Piyush
+Backend Developer +
+Technical Pitch + Video
+Editing
+Anugrah
+Database Developer
+VYBE — From what's happening in the world to what you can do next.
+8
