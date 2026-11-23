@@ -7,17 +7,20 @@ from sqlalchemy import (
     String,
     Text,
     ForeignKey,
-    DateTime
+    DateTime,
+    Boolean,
+    UniqueConstraint
 )
+
 from sqlalchemy.orm import declarative_base, relationship
 
 
 Base = declarative_base()
 
 
-# -----------------------------------
+# ==========================================
 # STUDENT
-# -----------------------------------
+# ==========================================
 
 class Student(Base):
     __tablename__ = "students"
@@ -41,10 +44,16 @@ class Student(Base):
         cascade="all, delete-orphan"
     )
 
+    watchlist_entries = relationship(
+        "EventWatchlist",
+        back_populates="student",
+        cascade="all, delete-orphan"
+    )
 
-# -----------------------------------
+
+# ==========================================
 # STUDENT DNA PROFILE
-# -----------------------------------
+# ==========================================
 
 class StudentProfile(Base):
     __tablename__ = "student_profiles"
@@ -69,9 +78,9 @@ class StudentProfile(Base):
     )
 
 
-# -----------------------------------
+# ==========================================
 # GROWTH PASSPORT: PROJECT
-# -----------------------------------
+# ==========================================
 
 class Project(Base):
     __tablename__ = "projects"
@@ -126,9 +135,9 @@ class Project(Base):
     )
 
 
-# -----------------------------------
+# ==========================================
 # GROWTH PASSPORT: MILESTONES
-# -----------------------------------
+# ==========================================
 
 class Milestone(Base):
     __tablename__ = "milestones"
@@ -165,9 +174,9 @@ class Milestone(Base):
     )
 
 
-# -----------------------------------
+# ==========================================
 # GROWTH PASSPORT: EVIDENCE
-# -----------------------------------
+# ==========================================
 
 class ProjectEvidence(Base):
     __tablename__ = "project_evidence"
@@ -199,4 +208,129 @@ class ProjectEvidence(Base):
     project = relationship(
         "Project",
         back_populates="evidence"
+    )
+
+
+# ==========================================
+# EVENTS
+# ==========================================
+
+class Event(Base):
+    __tablename__ = "events"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=True)
+    organizer = Column(String(150), nullable=True)
+    category = Column(String(100), nullable=True)
+
+    start_at = Column(
+        DateTime(timezone=True),
+        nullable=False
+    )
+
+    end_at = Column(
+        DateTime(timezone=True),
+        nullable=True
+    )
+
+    registration_deadline = Column(
+        DateTime(timezone=True),
+        nullable=True
+    )
+
+    venue = Column(String(250), nullable=True)
+    registration_url = Column(String(1000), nullable=True)
+    source_url = Column(String(1000), nullable=True)
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False
+    )
+
+    watchlist_entries = relationship(
+        "EventWatchlist",
+        back_populates="event",
+        cascade="all, delete-orphan"
+    )
+
+
+# ==========================================
+# EVENT WATCHLIST
+# ==========================================
+
+class EventWatchlist(Base):
+    __tablename__ = "event_watchlist"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "student_id",
+            "event_id",
+            name="unique_student_event_watchlist"
+        ),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    student_id = Column(
+        Integer,
+        ForeignKey("students.id"),
+        nullable=False,
+        index=True
+    )
+
+    event_id = Column(
+        Integer,
+        ForeignKey("events.id"),
+        nullable=False,
+        index=True
+    )
+
+    reminder_enabled = Column(
+        Boolean,
+        nullable=False,
+        default=True
+    )
+
+    # Default: 1440 minutes = 24 hours before event
+    reminder_minutes_before = Column(
+        Integer,
+        nullable=False,
+        default=1440
+    )
+
+    notify_email = Column(
+        Boolean,
+        nullable=False,
+        default=True
+    )
+
+    notify_in_app = Column(
+        Boolean,
+        nullable=False,
+        default=True
+    )
+
+    sync_to_google_calendar = Column(
+        Boolean,
+        nullable=False,
+        default=False
+    )
+
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow,
+        nullable=False
+    )
+
+    student = relationship(
+        "Student",
+        back_populates="watchlist_entries"
+    )
+
+    event = relationship(
+        "Event",
+        back_populates="watchlist_entries"
     )
