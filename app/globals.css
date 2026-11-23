@@ -1,0 +1,387 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Existing & Theme Tokens */
+  --color-surface: rgba(255, 255, 255, 0.65);
+  --color-surface-solid: #FFFFFF;
+  --color-card: rgba(255, 255, 255, 0.85);
+  --color-border: rgba(255, 255, 255, 0.65);
+  --color-border-subtle: rgba(30, 30, 34, 0.08);
+  --color-text: #1E1E22;
+  --color-muted: #4B5563; /* WCAG AA 4.5:1 compliant */
+  --color-accent-peach: #FAD8C6;
+  --color-accent-pink: #F6C9DD;
+  --color-accent-lilac: #D9C9F5;
+  --color-accent-lime: #D3E57A;
+  --color-charcoal: #26262B;
+  --color-ink: #1E1E22;
+
+  /* Primary Button Theme Tokens */
+  --btn-primary-bg: #1c1c24;
+  --btn-primary-fg: #ffffff;
+  --on-primary-bg: #1c1c24;
+  --on-primary-text: #ffffff;
+  --on-primary-hover: #2E2E36;
+
+  /* Liquid Glass System Tokens */
+  --glass-bg: rgba(255, 255, 255, 0.42);
+  --glass-border: rgba(255, 255, 255, 0.65);
+
+  --bg-gradient: radial-gradient(circle at 10% 12%, rgba(250, 216, 198, 0.75) 0%, transparent 45%),
+                 radial-gradient(circle at 50% 25%, rgba(246, 201, 221, 0.65) 0%, transparent 50%),
+                 radial-gradient(circle at 90% 15%, rgba(217, 201, 245, 0.70) 0%, transparent 48%),
+                 linear-gradient(180deg, #FDFBFA 0%, #F8F7FB 40%, #F5F4F9 100%);
+  --bg-color: #F8F7FB;
+}
+
+.dark {
+  --color-surface: rgba(28, 28, 38, 0.65);
+  --color-surface-solid: #1C1C22;
+  --color-card: rgba(34, 34, 46, 0.85);
+  --color-border: rgba(255, 255, 255, 0.14);
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-text: #F5F5F7;
+  --color-muted: #D1D5DB; /* WCAG AA 4.5:1 compliant */
+  --color-accent-peach: #E5B49D;
+  --color-accent-pink: #D99AB5;
+  --color-accent-lilac: #B8A5DE;
+  --color-accent-lime: #D3E57A;
+  --color-charcoal: #18181F;
+  --color-ink: #0C0C10;
+
+  /* Primary Button Theme Tokens */
+  --btn-primary-bg: #ffffff;
+  --btn-primary-fg: #1c1c24;
+  --on-primary-bg: #ffffff;
+  --on-primary-text: #1c1c24;
+  --on-primary-hover: #F0F0F3;
+
+  /* Liquid Glass System Tokens */
+  --glass-bg: rgba(28, 28, 38, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.14);
+
+  --bg-gradient: radial-gradient(circle at 15% 10%, rgba(94, 46, 70, 0.35) 0%, transparent 45%),
+                 radial-gradient(circle at 55% 20%, rgba(45, 42, 85, 0.35) 0%, transparent 50%),
+                 radial-gradient(circle at 85% 15%, rgba(76, 52, 98, 0.35) 0%, transparent 45%),
+                 linear-gradient(180deg, #0C0C10 0%, #111118 50%, #0A0A0E 100%);
+  --bg-color: #0C0C10;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
+  width: 100%;
+  font-family: 'Plus Jakarta Sans', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--color-text);
+  background: var(--bg-color);
+  background-image: var(--bg-gradient);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings: Negative letter-spacing only */
+h1, h2, h3, h4, .text-display, .text-h1, .text-h2, .text-h3 {
+  letter-spacing: -0.025em;
+}
+
+/* Body text, labels, and captions: Normal letter-spacing */
+p, label, span, button, input, textarea, select, .text-body, .text-small, .text-caption {
+  letter-spacing: normal;
+}
+
+/* ==============================================================================
+   PRIMARY PILL BUTTON THEME & CONTRAST ENFORCEMENT
+   ============================================================================== */
+.btn-primary-theme,
+button.btn-primary-theme,
+a.btn-primary-theme {
+  background-color: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-fg) !important;
+}
+
+.btn-primary-theme *,
+button.btn-primary-theme *,
+a.btn-primary-theme * {
+  color: currentColor !important;
+}
+
+/* ==============================================================================
+   LIQUID GLASS SYSTEM
+   ============================================================================== */
+.liquid-glass {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 8px 32px rgba(120, 90, 180, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.5),
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.12)
+  );
+}
+
+.dark .liquid-glass {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.dark .liquid-glass::before {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0) 40%,
+    rgba(255, 255, 255, 0.04)
+  );
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .liquid-glass {
+    background: rgba(255, 255, 255, 0.85);
+  }
+  .dark .liquid-glass {
+    background: rgba(28, 28, 38, 0.92);
+  }
+}
+
+/* Dark Liquid Glass (for Feature Cards so blobs show through) */
+.dark-liquid-glass {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  background: rgba(26, 26, 34, 0.78);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 16px 40px -10px rgba(10, 10, 16, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08);
+  color: #FFFFFF;
+}
+
+.dark-liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.18),
+    rgba(255, 255, 255, 0) 45%,
+    rgba(255, 255, 255, 0.05)
+  );
+}
+
+/* Lime progress ring glow */
+.lime-glow {
+  filter: drop-shadow(0 0 12px rgba(200, 230, 90, 0.55));
+}
+
+/* ==============================================================================
+   BACKGROUND BLOBS: Fixed, blurred, slowly drifting blobs
+   ============================================================================== */
+.blob-container {
+  position: fixed !important;
+  inset: 0 !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Fixed Sidebar override so .liquid-glass never forces position: relative */
+.sidebar-fixed,
+aside.sidebar-fixed {
+  position: fixed !important;
+  top: 24px !important;
+  left: 24px !important;
+  width: 16rem !important;
+  height: calc(100vh - 48px) !important;
+  max-height: calc(100vh - 48px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  z-index: 30 !important;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  will-change: transform;
+}
+
+.dark .blob {
+  opacity: 0.24;
+}
+
+.blob-peach {
+  width: 440px;
+  height: 440px;
+  background: #ffc9b5;
+  top: -60px;
+  left: 10%;
+  animation: drift-1 18s ease-in-out infinite alternate;
+}
+
+.blob-lavender {
+  width: 480px;
+  height: 480px;
+  background: #cdb8ff;
+  top: 30%;
+  right: 5%;
+  animation: drift-2 20s ease-in-out infinite alternate;
+}
+
+.blob-lime {
+  width: 360px;
+  height: 360px;
+  background: #d6ec7a;
+  bottom: 5%;
+  left: 20%;
+  animation: drift-3 19s ease-in-out infinite alternate;
+}
+
+@keyframes drift-1 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(60px, 80px) scale(1.08);
+  }
+  100% {
+    transform: translate(-40px, 120px) scale(0.95);
+  }
+}
+
+@keyframes drift-2 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-80px, -60px) scale(1.12);
+  }
+  100% {
+    transform: translate(40px, -90px) scale(0.92);
+  }
+}
+
+@keyframes drift-3 {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-70px, -50px) scale(1.05);
+  }
+  100% {
+    transform: translate(50px, -70px) scale(0.98);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob {
+    animation: none !important;
+  }
+  .btn-press,
+  .animate-spin,
+  .transition-all {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}
+
+/* Reduced transparency fallback */
+@media (prefers-reduced-transparency: reduce) {
+  .glass-surface,
+  .liquid-glass,
+  .dark-liquid-glass {
+    background: var(--color-surface-solid) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* Button Press transitions */
+.btn-press {
+  transition: transform 180ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 180ms cubic-bezier(0.4, 0, 0.2, 1), opacity 180ms ease;
+}
+
+.btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Shimmer Skeleton */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.3) 25%, rgba(255, 255, 255, 0.6) 50%, rgba(255, 255, 255, 0.3) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+}
+
+.dark .skeleton-shimmer {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.05) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.8s infinite;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 130, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(120, 120, 130, 0.4);
+}
