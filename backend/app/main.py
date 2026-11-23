@@ -5,6 +5,8 @@ from app.students import router as student_router
 from app.pulse import router as pulse_router
 from app.world_action import router as world_action_router
 from app.growth_passport import router as growth_passport_router
+from app.events import router as events_router
+from app.notifications import router as notifications_router
 
 
 app = FastAPI(
@@ -37,6 +39,12 @@ app.include_router(
 )
 
 app.include_router(
+    notifications_router,
+    prefix="/notifications",
+    tags=["Notifications"]
+)
+
+app.include_router(
     pulse_router,
     prefix="/pulse",
     tags=["PULSE AI"]
@@ -52,4 +60,10 @@ app.include_router(
     growth_passport_router,
     prefix="/growth-passport",
     tags=["Growth Passport"]
+)
+
+app.include_router(
+    events_router,
+    prefix="/events",
+    tags=["Events & Watchlist"]
 )

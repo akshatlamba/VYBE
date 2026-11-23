@@ -1,7 +1,8 @@
 
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 
 from app.database.connection import get_db
 from app.database.models import Student, StudentProfile
@@ -9,15 +10,22 @@ from app.database.models import Student, StudentProfile
 router = APIRouter()
 
 
-# Basic student registration
+# ==========================================
+# BASIC STUDENT REGISTRATION
+# ==========================================
+
 class StudentCreate(BaseModel):
     name: str
+    email: EmailStr
     interest: str
     skill_level: str
     goal: str
 
 
-# Student DNA profile input
+# ==========================================
+# STUDENT DNA PROFILE INPUT
+# ==========================================
+
 class StudentProfileCreate(BaseModel):
     skills: str | None = None
     experience: str | None = None
@@ -25,7 +33,10 @@ class StudentProfileCreate(BaseModel):
     learning_preference: str | None = None
 
 
-# GET all students
+# ==========================================
+# GET ALL STUDENTS
+# ==========================================
+
 @router.get("/")
 def get_students(db: Session = Depends(get_db)):
 
@@ -37,6 +48,7 @@ def get_students(db: Session = Depends(get_db)):
             {
                 "id": student.id,
                 "name": student.name,
+                "email": student.email,
                 "interest": student.interest,
                 "skill_level": student.skill_level,
                 "goal": student.goal
@@ -46,32 +58,67 @@ def get_students(db: Session = Depends(get_db)):
     }
 
 
-# POST a new student
+# ==========================================
+# REGISTER A NEW STUDENT
+# ==========================================
+
 @router.post("/")
 def create_student(
     student: StudentCreate,
     db: Session = Depends(get_db)
 ):
 
+    normalized_email = str(student.email).strip().lower()
+
+    existing_student = db.query(Student).filter(
+        Student.email == normalized_email
+    ).first()
+
+    if existing_student:
+        raise HTTPException(
+            status_code=409,
+            detail="This email is already registered."
+        )
+
     new_student = Student(
-        name=student.name,
+        name=student.name.strip(),
+        email=normalized_email,
         interest=student.interest,
         skill_level=student.skill_level,
         goal=student.goal
     )
 
-    db.add(new_student)
-    db.commit()
-    db.refresh(new_student)
+    try:
+        db.add(new_student)
+        db.commit()
+        db.refresh(new_student)
+
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=409,
+            detail="This email is already registered."
+        )
+
+    except Exception:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail="Student registration failed."
+        )
 
     return {
         "message": "Student registered successfully!",
         "student_id": new_student.id,
-        "name": new_student.name
+        "name": new_student.name,
+        "email": new_student.email
     }
 
 
-# POST Student DNA profile
+# ==========================================
+# CREATE STUDENT DNA PROFILE
+# ==========================================
+
 @router.post("/{student_id}/profile")
 def create_student_profile(
     student_id: int,
@@ -124,7 +171,10 @@ def create_student_profile(
     }
 
 
-# GET Student DNA profile
+# ==========================================
+# GET STUDENT DNA PROFILE
+# ==========================================
+
 @router.get("/{student_id}/profile")
 def get_student_profile(
     student_id: int,

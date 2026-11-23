@@ -27,6 +27,7 @@ class Student(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
+    email = Column(String(254), nullable=True, unique=True, index=True)
     interest = Column(String(100), nullable=False)
     skill_level = Column(String(50), nullable=False)
     goal = Column(Text, nullable=False)
@@ -46,6 +47,12 @@ class Student(Base):
 
     watchlist_entries = relationship(
         "EventWatchlist",
+        back_populates="student",
+        cascade="all, delete-orphan"
+    )
+
+    notifications = relationship(
+        "Notification",
         back_populates="student",
         cascade="all, delete-orphan"
     )
@@ -276,14 +283,14 @@ class EventWatchlist(Base):
 
     student_id = Column(
         Integer,
-        ForeignKey("students.id"),
+        ForeignKey("students.id", ondelete="CASCADE"),
         nullable=False,
         index=True
     )
 
     event_id = Column(
         Integer,
-        ForeignKey("events.id"),
+        ForeignKey("events.id", ondelete="CASCADE"),
         nullable=False,
         index=True
     )
@@ -294,7 +301,6 @@ class EventWatchlist(Base):
         default=True
     )
 
-    # Default: 1440 minutes = 24 hours before event
     reminder_minutes_before = Column(
         Integer,
         nullable=False,
@@ -333,4 +339,164 @@ class EventWatchlist(Base):
     event = relationship(
         "Event",
         back_populates="watchlist_entries"
+    )
+
+    reminders = relationship(
+        "Reminder",
+        back_populates="watchlist",
+        cascade="all, delete-orphan"
+    )
+
+
+# ==========================================
+# EVENT REMINDERS
+# ==========================================
+
+class Reminder(Base):
+    __tablename__ = "reminders"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "watchlist_id",
+            "reminder_minutes_before",
+            name="unique_watchlist_reminder_offset"
+        ),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    watchlist_id = Column(
+        Integer,
+        ForeignKey("event_watchlist.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+
+    scheduled_for = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        index=True
+    )
+
+    reminder_minutes_before = Column(
+        Integer,
+        nullable=False,
+        default=1440
+    )
+
+    status = Column(
+        String(30),
+        nullable=False,
+        default="pending",
+        index=True
+    )
+
+    attempts = Column(
+        Integer,
+        nullable=False,
+        default=0
+    )
+
+    max_attempts = Column(
+        Integer,
+        nullable=False,
+        default=5
+    )
+
+    locked_until = Column(
+        DateTime(timezone=True),
+        nullable=True
+    )
+
+    sent_at = Column(
+        DateTime(timezone=True),
+        nullable=True
+    )
+
+    last_error = Column(Text, nullable=True)
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=datetime.utcnow
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow
+    )
+
+    watchlist = relationship(
+        "EventWatchlist",
+        back_populates="reminders"
+    )
+
+    notification = relationship(
+        "Notification",
+        back_populates="reminder",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
+
+
+# ==========================================
+# IN-APP NOTIFICATIONS
+# ==========================================
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    student_id = Column(
+        Integer,
+        ForeignKey("students.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+
+    reminder_id = Column(
+        Integer,
+        ForeignKey("reminders.id", ondelete="CASCADE"),
+        unique=True,
+        nullable=False
+    )
+
+    title = Column(
+        String(200),
+        nullable=False
+    )
+
+    message = Column(
+        Text,
+        nullable=False
+    )
+
+    is_read = Column(
+        Boolean,
+        nullable=False,
+        default=False
+    )
+
+    read_at = Column(
+        DateTime(timezone=True),
+        nullable=True
+    )
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=datetime.utcnow
+    )
+
+    student = relationship(
+        "Student",
+        back_populates="notifications"
+    )
+
+    reminder = relationship(
+        "Reminder",
+        back_populates="notification"
     )
