@@ -58,17 +58,13 @@ def get_notifications(
 @router.patch("/{notification_id}/read", response_model=NotificationOut)
 def mark_notification_as_read(
     notification_id: int,
-    student_id: int,
+    student_id: int | None = None,
     db: Session = Depends(get_db)
 ):
-    notification = (
-        db.query(Notification)
-        .filter(
-            Notification.id == notification_id,
-            Notification.student_id == student_id
-        )
-        .first()
-    )
+    query = db.query(Notification).filter(Notification.id == notification_id)
+    if student_id is not None:
+        query = query.filter(Notification.student_id == student_id)
+    notification = query.first()
 
     if not notification:
         raise HTTPException(

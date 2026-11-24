@@ -1,29 +1,80 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useTheme } from "@/lib/theme/theme-provider";
 import { Button } from "../ui/button";
 import { LiquidGlassHero } from "../ui/liquid-glass-hero";
 import { Plus, Bell, Sun, Moon, Laptop, ShieldCheck, GraduationCap, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { api } from "@/lib/api/client";
 
 interface HeaderProps {
   currentRole: "student" | "staff" | "admin";
   onRoleChange: (role: "student" | "staff" | "admin") => void;
   onOpenQuickAction?: () => void;
   userName?: string;
+  studentId?: number;
 }
 
 export function Header({
   currentRole,
   onRoleChange,
   onOpenQuickAction,
-  userName = "Ashutosh Singh",
+  userName = "Aarav Patel",
+  studentId = 1,
 }: HeaderProps) {
   const { theme, setTheme } = useTheme();
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [showNotif, setShowNotif] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+
+  const roleMenuRef = useRef<HTMLDivElement>(null);
+  const notifMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close menus on outside click or Escape
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (roleMenuRef.current && !roleMenuRef.current.contains(e.target as Node)) {
+        setShowRoleMenu(false);
+      }
+      if (notifMenuRef.current && !notifMenuRef.current.contains(e.target as Node)) {
+        setShowNotif(false);
+      }
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setShowRoleMenu(false);
+        setShowNotif(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  useEffect(() => {
+    async function loadNotifications() {
+      const res = await api.notifications.getNotifications(studentId);
+      if (res.success) {
+        setNotifications(res.data);
+        setUnreadCount(res.unread);
+      }
+    }
+    loadNotifications();
+  }, [studentId]);
+
+  const handleMarkAllRead = async () => {
+    await api.notifications.markAllAsRead(studentId);
+    setUnreadCount(0);
+    setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+  };
 
   // Time-aware greeting
   const hour = new Date().getHours();
@@ -65,7 +116,7 @@ export function Header({
       {/* Right Controls: Role switcher, Theme toggle, Round Black Add, Round White Bell */}
       <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
         {/* Role Switcher Pill */}
-        <div className="relative">
+        <div className="relative" ref={roleMenuRef}>
           <LiquidGlassHero
             cornerRadius={999}
             displacementScale={64}
@@ -185,7 +236,7 @@ export function Header({
         </LiquidGlassHero>
 
         {/* Round White Notification Button */}
-        <div className="relative">
+        <div className="relative" ref={notifMenuRef}>
           <LiquidGlassHero
             cornerRadius={999}
             displacementScale={64}
@@ -203,37 +254,55 @@ export function Header({
               title="Notifications"
             >
               <Bell className="w-5 h-5 stroke-[1.8]" />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-[#E0605E]" />
+              {unreadCount > 0 && (
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-[#E0605E]" />
+              )}
             </div>
           </LiquidGlassHero>
 
           {showNotif && (
-            <div className="absolute right-0 mt-2 w-72 rounded-2xl glass-surface bg-white/95 dark:bg-[#1E1E24]/95 p-4 shadow-xl border border-white/60 dark:border-white/10 z-50 animate-in fade-in zoom-in-95 duration-150">
+            <div className="absolute right-0 mt-2 w-80 rounded-2xl glass-surface bg-white/95 dark:bg-[#1E1E24]/95 p-4 shadow-xl border border-white/60 dark:border-white/10 z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="flex items-center justify-between mb-3 pb-2 border-b border-black/5 dark:border-white/5">
                 <span className="text-small font-bold text-[#1E1E22] dark:text-white">
-                  Notifications
+                  Notifications {unreadCount > 0 ? `(${unreadCount})` : ""}
                 </span>
-                <span className="text-[11px] text-[#2F6BFF] font-semibold cursor-pointer">
-                  Mark read
-                </span>
+                {unreadCount > 0 && (
+                  <button
+                    onClick={handleMarkAllRead}
+                    className="text-[11px] text-[#2F6BFF] font-semibold cursor-pointer hover:underline"
+                  >
+                    Mark read
+                  </button>
+                )}
               </div>
-              <div className="flex flex-col gap-2.5">
-                <div className="text-caption p-2.5 rounded-xl bg-black/5 dark:bg-white/5">
-                  <div className="font-semibold text-[#1E1E22] dark:text-white">
-                    Deadline approaching
+              <div className="flex flex-col gap-2.5 max-h-60 overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <div className="text-caption text-gray-400 text-center py-4">
+                    No new notifications.
                   </div>
-                  <div className="text-[#6B7280] dark:text-gray-400 mt-0.5">
-                    Smart India Hackathon closes in 4 days.
-                  </div>
-                </div>
-                <div className="text-caption p-2.5 rounded-xl bg-black/5 dark:bg-white/5">
-                  <div className="font-semibold text-[#1E1E22] dark:text-white">
-                    Signal matched
-                  </div>
-                  <div className="text-[#6B7280] dark:text-gray-400 mt-0.5">
-                    New AI Agents signal aligns with your Python goals.
-                  </div>
-                </div>
+                ) : (
+                  notifications.map((notif) => (
+                    <div
+                      key={notif.id}
+                      className={cn(
+                        "text-caption p-2.5 rounded-xl transition-colors",
+                        notif.is_read
+                          ? "bg-black/[0.02] dark:bg-white/[0.02] text-gray-500"
+                          : "bg-black/5 dark:bg-white/5 text-[#1E1E22] dark:text-white font-medium"
+                      )}
+                    >
+                      <div className="font-semibold text-[#1E1E22] dark:text-white flex items-center justify-between">
+                        <span>{notif.title}</span>
+                        {!notif.is_read && (
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#2F6BFF]" />
+                        )}
+                      </div>
+                      <div className="text-[#6B7280] dark:text-gray-400 mt-0.5 leading-snug">
+                        {notif.message}
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           )}

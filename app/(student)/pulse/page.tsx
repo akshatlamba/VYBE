@@ -7,6 +7,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ProgressRing } from "@/components/ui/progress-ring";
+import { BhashaSelector } from "@/components/ui/bhasha-selector";
+import { BHASHA_LANGUAGES } from "@/lib/bhasha/languages";
 import {
   Sparkles,
   Send,
@@ -20,6 +22,7 @@ import {
   GraduationCap,
   Building2,
   BookOpen,
+  Info,
 } from "lucide-react";
 import { INITIAL_SIGNALS, PERSONAS, StudentProfile, WorldSignal } from "@/lib/data/mock-db";
 import { ActionProposal } from "@/lib/ai/provider";
@@ -32,6 +35,10 @@ interface ChatMessage {
   action_proposals?: ActionProposal[];
   opportunity_ids?: string[];
   timestamp: string;
+  is_live_ai?: boolean;
+  model_used?: string;
+  provider?: string;
+  notice?: string;
 }
 
 function PulseContent() {
@@ -43,23 +50,30 @@ function PulseContent() {
   const [selectedPersonaKey, setSelectedPersonaKey] = useState<"beginner" | "startup" | "research">("beginner");
   const student: StudentProfile = PERSONAS[selectedPersonaKey];
 
+  // Selected language for VYBE Bhasha
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("en");
+
   const [inputMessage, setInputMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [addedTasks, setAddedTasks] = useState<string[]>([]);
-
-  // Default initial message based on persona
   const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   useEffect(() => {
-    // Initial welcome message tailored to persona
+    // Adaptive natural welcome message based on student and track
+    const welcomeByGoal: Record<string, string> = {
+      internship: `Hi ${student.name.split(" ")[0]}! Ready to explore how recent tech breakthroughs translate into high-impact internships and portfolio projects?`,
+      startup: `Hey ${student.name.split(" ")[0]}! Let's connect real-world industry shifts to venture ideas, problem statements, and founder fellowships.`,
+      research: `Welcome ${student.name.split(" ")[0]}. Let's analyze benchmark papers and frontier architectures for research internships and lab submissions.`,
+    };
+
     const initialWelcome: ChatMessage = {
       id: "welcome-1",
       sender: "pulse",
-      content: `Welcome to **PULSE**, ${student.name}. I am your growth decision intelligence guide.
-
-I analyze global signals and student opportunities through your personal context (${student.academic_year} ${student.department}, focusing on **${student.primary_goal}**).`,
-      why_this: `Configured for ${student.name} (${selectedPersonaKey} track).`,
+      content: welcomeByGoal[selectedPersonaKey] || `Welcome ${student.name.split(" ")[0]}! What would you like to prepare for today?`,
+      why_this: `Configured for ${student.name} · ${student.academic_year} ${student.department} (${student.primary_goal} track).`,
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      is_live_ai: false,
+      provider: "Student DNA Contextual Guide",
     };
 
     if (signalId) {
@@ -92,6 +106,7 @@ I analyze global signals and student opportunities through your personal context
           message: userMsg.content,
           signal_id: sig.id,
           persona_id: personaKey,
+          language: selectedLanguage,
         }),
       });
       const json = await res.json();
@@ -104,11 +119,15 @@ I analyze global signals and student opportunities through your personal context
           action_proposals: json.data.action_proposals,
           opportunity_ids: json.data.opportunity_ids,
           timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          is_live_ai: json.data.is_live_ai,
+          model_used: json.data.model_used,
+          provider: json.data.provider,
+          notice: json.data.notice,
         };
         setMessages((prev) => [...prev, pulseMsg]);
       }
     } catch {
-      // Handled
+      // Error recovery
     } finally {
       setLoading(false);
     }
@@ -138,6 +157,7 @@ I analyze global signals and student opportunities through your personal context
         body: JSON.stringify({
           message: query,
           persona_id: selectedPersonaKey,
+          language: selectedLanguage,
         }),
       });
       const json = await res.json();
@@ -150,11 +170,15 @@ I analyze global signals and student opportunities through your personal context
           action_proposals: json.data.action_proposals,
           opportunity_ids: json.data.opportunity_ids,
           timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          is_live_ai: json.data.is_live_ai,
+          model_used: json.data.model_used,
+          provider: json.data.provider,
+          notice: json.data.notice,
         };
         setMessages((prev) => [...prev, pulseMsg]);
       }
     } catch {
-      // Handled
+      // Error recovery
     } finally {
       setLoading(false);
     }
@@ -163,6 +187,9 @@ I analyze global signals and student opportunities through your personal context
   const handleAddToActionPlan = (title: string) => {
     setAddedTasks((prev) => [...prev, title]);
   };
+
+  // Find latest PULSE message for text-to-speech reading
+  const latestPulseMsg = [...messages].reverse().find((m) => m.sender === "pulse");
 
   return (
     <div className="flex flex-col gap-6 py-2 max-w-4xl mx-auto">
@@ -221,6 +248,26 @@ I analyze global signals and student opportunities through your personal context
         </div>
       </div>
 
+      {/* VYBE Bhasha Multi-Language & Voice Accessibility Toolbar */}
+      <div className="flex items-center justify-between p-3 rounded-2xl glass-surface bg-white/70 dark:bg-white/5 border border-black/5 dark:border-white/10">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+          <span className="text-caption font-bold text-gray-400 uppercase tracking-wider">
+            VYBE Bhasha:
+          </span>
+          <BhashaSelector
+            selectedLanguage={selectedLanguage}
+            onSelectLanguage={(code) => setSelectedLanguage(code)}
+            onVoiceInput={(transcript) => setInputMessage(transcript)}
+            textToSpeak={latestPulseMsg?.content}
+          />
+        </div>
+
+        <div className="text-[11px] text-gray-400 hidden md:flex items-center gap-1">
+          <Info className="w-3.5 h-3.5 text-[#2F6BFF]" />
+          <span>22 Indian Languages Supported</span>
+        </div>
+      </div>
+
       {/* World Signals Strip: Click to Analyze */}
       <div className="flex flex-col gap-2">
         <span className="text-caption font-bold text-gray-500 uppercase tracking-wider px-1">
@@ -253,6 +300,20 @@ I analyze global signals and student opportunities through your personal context
                 <span className="text-[11px] font-bold text-gray-400">
                   {isPulse ? "PULSE Guide" : student.name}
                 </span>
+
+                {/* AI / Provider Badge */}
+                {isPulse && msg.is_live_ai && (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#5BAE75]/20 text-[#2B7343] dark:text-[#78C991] font-semibold flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" />
+                    {msg.model_used || "Gemini Live"}
+                  </span>
+                )}
+                {isPulse && !msg.is_live_ai && msg.provider && (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/5 dark:bg-white/10 text-gray-500 font-semibold">
+                    ⚡ {msg.provider}
+                  </span>
+                )}
+
                 <span className="text-[10px] text-gray-400">{msg.timestamp}</span>
               </div>
 
@@ -272,6 +333,13 @@ I analyze global signals and student opportunities through your personal context
                   <div className="mt-4 pt-3 border-t border-black/5 dark:border-white/10 text-small text-[#6B7280] dark:text-gray-300 font-medium">
                     🔍 <strong className="text-[#1E1E22] dark:text-white">Why this:</strong>{" "}
                     {msg.why_this}
+                  </div>
+                )}
+
+                {/* Offline Notice if applicable */}
+                {msg.notice && (
+                  <div className="mt-2 text-[11px] text-gray-400 italic">
+                    ℹ️ {msg.notice}
                   </div>
                 )}
 
@@ -359,7 +427,7 @@ I analyze global signals and student opportunities through your personal context
         <div className="flex items-center gap-2 p-2 rounded-full glass-surface bg-white/90 dark:bg-[#1E1E24]/90 backdrop-blur-2xl border border-white/60 dark:border-white/10 shadow-lg">
           <input
             type="text"
-            placeholder="Ask PULSE anything about skills, projects, or next steps..."
+            placeholder={`Ask PULSE anything in ${BHASHA_LANGUAGES.find((l) => l.code === selectedLanguage)?.nativeName || "English"}...`}
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             disabled={loading}

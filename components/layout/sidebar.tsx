@@ -6,13 +6,14 @@ import { usePathname } from "next/navigation";
 import { NavItem } from "./nav-items";
 import { LiquidGlassHero } from "../ui/liquid-glass-hero";
 import { cn } from "@/lib/utils";
-import { Palette, Sparkles, Flame, CheckCircle } from "lucide-react";
+import { Palette, Sparkles, Flame, CheckCircle, MessageSquare } from "lucide-react";
 
 interface SidebarProps {
   items: NavItem[];
+  onOpenQuickPulse?: () => void;
 }
 
-export function Sidebar({ items }: SidebarProps) {
+export function Sidebar({ items, onOpenQuickPulse }: SidebarProps) {
   const pathname = usePathname();
   const isDev = process.env.NODE_ENV === "development";
 
@@ -137,6 +138,23 @@ export function Sidebar({ items }: SidebarProps) {
           </div>
         </Link>
 
+        {/* Quick PULSE Trigger */}
+        {onOpenQuickPulse && (
+          <button
+            type="button"
+            onClick={onOpenQuickPulse}
+            className="flex items-center justify-between w-full p-3 rounded-2xl bg-[#D3E57A]/20 hover:bg-[#D3E57A]/30 border border-[#D3E57A]/40 text-[#1E1E22] dark:text-[#D3E57A] transition-all text-left"
+          >
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-[#D3E57A] fill-current" />
+              <span className="text-xs font-bold">Quick PULSE</span>
+            </div>
+            <span className="text-[10px] font-semibold bg-[#1E1E22] dark:bg-white text-white dark:text-[#1E1E22] px-2 py-0.5 rounded-full">
+              Side Chat
+            </span>
+          </button>
+        )}
+
         {/* Footer info & Dev-only Design System Link */}
         <div className="flex flex-col gap-1.5 pt-3 border-t border-black/5 dark:border-white/5">
           {isDev && (
@@ -154,7 +172,7 @@ export function Sidebar({ items }: SidebarProps) {
             </Link>
           )}
           <div className="px-2 text-[11px] text-[#9CA3AF] dark:text-gray-500 leading-tight">
-            Prasunex 2026 · Code Storm
+            VYBE Intelligence Layer · v2.0
           </div>
         </div>
       </div>

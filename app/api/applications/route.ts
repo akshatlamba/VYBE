@@ -70,6 +70,26 @@ export async function POST(request: NextRequest) {
 
     addApplication(newApp);
 
+    // Attempt to sync to FastAPI event_watchlist
+    try {
+      const FASTAPI_BASE_URL =
+        process.env.NEXT_PUBLIC_BACKEND_URL ||
+        process.env.NEXT_PUBLIC_API_URL ||
+        "http://127.0.0.1:8000";
+
+      const numericEventId = parseInt(opp.id.replace(/\D/g, ""), 10) || 1;
+      await fetch(`${FASTAPI_BASE_URL}/events/watchlist`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_id: 1,
+          event_id: numericEventId,
+          reminder_enabled: true,
+          stage: validated.stage,
+        }),
+      });
+    } catch {}
+
     return NextResponse.json({
       success: true,
       data: newApp,

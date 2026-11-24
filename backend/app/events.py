@@ -217,6 +217,8 @@ class WatchlistCreate(BaseModel):
     notify_email: bool = True
     notify_in_app: bool = True
     sync_to_google_calendar: bool = False
+    stage: str = "saved"
+    notes: str | None = None
 
 
 class WatchlistUpdate(BaseModel):
@@ -225,6 +227,8 @@ class WatchlistUpdate(BaseModel):
     notify_email: bool | None = None
     notify_in_app: bool | None = None
     sync_to_google_calendar: bool | None = None
+    stage: str | None = None
+    notes: str | None = None
 
 
 class WatchlistOut(BaseModel):
@@ -238,6 +242,8 @@ class WatchlistOut(BaseModel):
     notify_email: bool
     notify_in_app: bool
     sync_to_google_calendar: bool
+    stage: str = "saved"
+    notes: str | None = None
     created_at: datetime
     event: EventOut
 
@@ -345,7 +351,9 @@ def add_to_watchlist(
             detail="This event is already in the student's watchlist"
         )
 
-    new_entry = EventWatchlist(**watchlist_data.model_dump())
+    model_columns = {c.name for c in EventWatchlist.__table__.columns}
+    data_dict = {k: v for k, v in watchlist_data.model_dump().items() if k in model_columns}
+    new_entry = EventWatchlist(**data_dict)
     new_entry.event = event
 
     try:
@@ -442,8 +450,10 @@ def update_watchlist_preferences(
             detail="Provide at least one preference to update"
         )
 
+    model_columns = {c.name for c in EventWatchlist.__table__.columns}
     for field, value in updates.items():
-        setattr(entry, field, value)
+        if field in model_columns:
+            setattr(entry, field, value)
 
     try:
         schedule_watchlist_reminder(db, entry)

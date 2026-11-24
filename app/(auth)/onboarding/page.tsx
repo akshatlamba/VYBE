@@ -8,10 +8,12 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { SkillTag } from "@/components/ui/badge";
 import { ProgressBar } from "@/components/ui/progress-bar";
-import { Sparkles, ArrowRight, ArrowLeft, CheckCircle2, Target, BookOpen, Clock, Wallet } from "lucide-react";
+import { Sparkles, ArrowRight, ArrowLeft, CheckCircle2, Target, BookOpen, Clock, Wallet, SkipForward } from "lucide-react";
+import { useAuth } from "@/lib/auth/auth-context";
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { user, updateUser } = useAuth();
   const [step, setStep] = useState(1);
 
   // Step 1: Goals & Interests
@@ -31,6 +33,7 @@ export default function OnboardingPage() {
   // Step 3: Academic Details
   const [academicYear, setAcademicYear] = useState("2nd Year");
   const [department, setDepartment] = useState("Computer Science");
+  const [institution, setInstitution] = useState("SRM University Delhi-NCR");
   const [location, setLocation] = useState("Delhi-NCR");
 
   // Step 4: Budget & Availability
@@ -58,14 +61,21 @@ export default function OnboardingPage() {
 
   const handleFinish = async () => {
     setSaving(true);
+    updateUser({
+      academic_year: academicYear,
+      department,
+      primary_goal: primaryGoal,
+      onboarded: true,
+    });
     try {
       await fetch("/api/profile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: "Ashutosh Singh",
+          name: user.name || "Student",
           academic_year: academicYear,
           department,
+          institution_name: institution,
           location,
           budget_max: Number(budgetMax),
           availability,
@@ -83,6 +93,14 @@ export default function OnboardingPage() {
       router.push("/");
     } catch {
       router.push("/");
+    }
+  };
+
+  const handleSkip = () => {
+    if (step < 4) {
+      setStep(step + 1);
+    } else {
+      handleFinish();
     }
   };
 
@@ -258,16 +276,28 @@ export default function OnboardingPage() {
             />
 
             <Select
-              label="Department / Major"
+              label="Department / Major Discipline"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
               options={[
-                { value: "Computer Science", label: "Computer Science & Engineering" },
-                { value: "Data Science", label: "Data Science & Artificial Intelligence" },
+                { value: "Computer Science", label: "Engineering: Computer Science & AI" },
+                { value: "Electrical", label: "Engineering: Electrical & Electronics" },
+                { value: "Mechanical", label: "Engineering: Mechanical & Robotics" },
+                { value: "Sciences", label: "Natural Sciences & Physics / Biotech" },
+                { value: "Economics", label: "Economics & Finance" },
                 { value: "Business", label: "Business Administration & Management" },
-                { value: "Design", label: "Design & Multimodal Media" },
-                { value: "Electrical", label: "Electrical & Electronics" },
+                { value: "Design", label: "Design: UX/UI & Creative Media" },
+                { value: "Law", label: "Law & Public Policy" },
+                { value: "Humanities", label: "Psychology & Humanities" },
+                { value: "Healthcare", label: "Medicine & Health Sciences" },
               ]}
+            />
+
+            <Input
+              label="Institution / University (Optional)"
+              value={institution}
+              onChange={(e) => setInstitution(e.target.value)}
+              placeholder="e.g. SRM University, Delhi University, IIT Delhi"
             />
 
             <Input
@@ -329,18 +359,27 @@ export default function OnboardingPage() {
 
         {/* Navigation Buttons */}
         <div className="flex items-center justify-between pt-4 border-t border-black/5 dark:border-white/5">
-          {step > 1 ? (
-            <Button
+          <div className="flex items-center gap-2">
+            {step > 1 && (
+              <Button
+                type="button"
+                variant="secondary"
+                label="Back"
+                onClick={() => setStep(step - 1)}
+                className="gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back
+              </Button>
+            )}
+            <button
               type="button"
-              variant="secondary"
-              label="Back"
-              onClick={() => setStep(step - 1)}
-              className="gap-2"
+              onClick={handleSkip}
+              className="text-xs font-semibold text-gray-500 hover:text-[#1E1E22] dark:hover:text-white px-3 py-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-          ) : <div />}
+              Skip
+            </button>
+          </div>
 
           {step < 4 ? (
             <Button
