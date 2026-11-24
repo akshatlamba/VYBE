@@ -7,6 +7,7 @@ export interface UserSession {
   id: number;
   name: string;
   email: string;
+  avatar_url?: string;
   academic_year: string;
   department: string;
   primary_goal: string;
@@ -14,10 +15,20 @@ export interface UserSession {
   onboarded: boolean;
 }
 
+export const DEMO_AVATARS = [
+  { id: "avatar-1", src: "/avatars/avatar-1.svg", label: "Aarav (AI Builder)" },
+  { id: "avatar-2", src: "/avatars/avatar-2.svg", label: "Riya (Founder)" },
+  { id: "avatar-3", src: "/avatars/avatar-3.svg", label: "Kabir (Researcher)" },
+  { id: "avatar-4", src: "/avatars/avatar-4.svg", label: "Priya (Data Lead)" },
+  { id: "avatar-5", src: "/avatars/avatar-5.svg", label: "Dev (Cloud Eng)" },
+  { id: "avatar-6", src: "/avatars/avatar-6.svg", label: "Ananya (Designer)" },
+];
+
 const DEFAULT_USER: UserSession = {
   id: 1,
   name: "Aarav Patel",
   email: "aarav.patel@srmuniversity.ac.in",
+  avatar_url: "/avatars/avatar-1.svg",
   academic_year: "2nd Year",
   department: "Computer Science",
   primary_goal: "internship",
@@ -28,7 +39,7 @@ const DEFAULT_USER: UserSession = {
 interface AuthContextType {
   user: UserSession;
   isAuthenticated: boolean;
-  login: (email: string, name?: string) => Promise<boolean>;
+  login: (email: string, name?: string, studentId?: number) => Promise<boolean>;
   logout: () => void;
   updateUser: (updates: Partial<UserSession>) => void;
   switchStudentContext: (studentId: number, name: string) => void;
@@ -59,11 +70,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = async (email: string, name?: string): Promise<boolean> => {
+  const login = async (email: string, name?: string, studentId?: number): Promise<boolean> => {
+    const avatar =
+      studentId === 2 || email.toLowerCase().includes("riya")
+        ? "/avatars/avatar-2.svg"
+        : studentId === 3 || email.toLowerCase().includes("kabir")
+        ? "/avatars/avatar-3.svg"
+        : "/avatars/avatar-1.svg";
+
     const newUser: UserSession = {
       ...DEFAULT_USER,
+      id: studentId || (email.toLowerCase().includes("riya") ? 2 : 1),
       email,
       name: name || email.split("@")[0].replace(".", " "),
+      avatar_url: avatar,
     };
     setUser(newUser);
     setIsAuthenticated(true);
@@ -90,8 +110,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const switchStudentContext = (studentId: number, name: string) => {
-    updateUser({ id: studentId, name });
+  const switchStudentContext = (studentId: number, name: string, avatar_url?: string) => {
+    const avatar =
+      avatar_url ||
+      (studentId === 2
+        ? "/avatars/avatar-2.svg"
+        : studentId === 3
+        ? "/avatars/avatar-3.svg"
+        : "/avatars/avatar-1.svg");
+    updateUser({ id: studentId, name, avatar_url: avatar });
   };
 
   return (

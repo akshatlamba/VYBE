@@ -142,7 +142,7 @@ export default function WorldPulsePage() {
 
   return (
     <main className="flex flex-col gap-7 py-2">
-      <section className="relative overflow-hidden rounded-[30px] border border-white/60 dark:border-white/10 bg-gradient-to-br from-[#25232E] via-[#343047] to-[#55445E] p-7 md:p-10 text-white shadow-xl">
+      <section className="relative overflow-hidden rounded-[24px] sm:rounded-[30px] border border-white/60 dark:border-white/10 bg-gradient-to-br from-[#25232E] via-[#343047] to-[#55445E] p-5 sm:p-7 md:p-10 text-white shadow-xl">
         <div className="absolute -right-16 -top-24 h-72 w-72 rounded-full bg-[#D3E57A]/15 blur-3xl" />
         <div className="absolute right-28 bottom-[-100px] h-56 w-56 rounded-full bg-purple-300/20 blur-3xl" />
 

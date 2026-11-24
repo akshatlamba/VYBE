@@ -16,6 +16,7 @@ import { SkillTag } from "../ui/badge";
 import { Plus, CheckCircle2, BookmarkPlus, Sparkles } from "lucide-react";
 import { AuthProvider, useAuth } from "@/lib/auth/auth-context";
 import { QuickChatPanel } from "../pulse/quick-chat-panel";
+import { FloatingPulseButton } from "../pulse/floating-pulse-button";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -110,7 +111,11 @@ function AppShellContent({ children }: AppShellProps) {
     }, 1200);
   };
 
-  // Skip global layout chrome on standalone auth pages
+  // Skip global layout chrome on standalone auth/onboarding pages
+  if (pathname.startsWith("/onboarding")) {
+    return <main className="min-h-screen w-full bg-[#0D0D12]">{children}</main>;
+  }
+
   const isAuthPage = pathname === "/login" || pathname === "/register";
   if (isAuthPage) {
     return (
@@ -143,7 +148,7 @@ function AppShellContent({ children }: AppShellProps) {
       <IconRail items={navItems} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col lg:pl-72 md:pl-28 pb-24 md:pb-8 transition-all">
+      <div className="flex-1 flex flex-col lg:pl-72 md:pl-28 pb-36 md:pb-32 transition-all w-full">
         {/* App Header */}
         <Header
           currentRole={role}
@@ -154,13 +159,19 @@ function AppShellContent({ children }: AppShellProps) {
         />
 
         {/* Page Container */}
-        <main className="w-full max-w-[1200px] mx-auto px-4 sm:px-8 xl:px-10 py-2 flex-1">
+        <main className="w-full max-w-[1440px] mx-auto px-3 sm:px-6 xl:px-8 py-2 flex-1">
           {children}
         </main>
       </div>
 
       {/* Mobile Floating Bottom Navigation (<768px) */}
       <BottomNav items={navItems} />
+
+      {/* Floating PULSE Chatbot Trigger */}
+      <FloatingPulseButton
+        isOpen={quickPulseOpen}
+        onToggle={() => setQuickPulseOpen((prev) => !prev)}
+      />
 
       {/* PULSE Quick Chat Side Panel */}
       <QuickChatPanel

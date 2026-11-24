@@ -113,21 +113,21 @@ export default function GrowthPassportPage() {
             <Award className="w-3.5 h-3.5" />
             PROOF-OF-GROWTH PASSPORT
           </div>
-          <h1 className="text-display font-light tracking-tight text-[#1E1E22] dark:text-white leading-tight">
-            Growth <span className="font-normal">Passport</span>
+          <h1 className="text-3xl sm:text-4xl md:text-display font-extrabold tracking-tight text-[#1E1E22] dark:text-white leading-tight">
+            Growth <span className="font-bold text-[#1E1E22] dark:text-[#D3E57A]">Passport</span>
           </h1>
-          <p className="text-small text-[#6B7280] dark:text-gray-400 mt-1">
+          <p className="text-small sm:text-body text-[#4B5563] dark:text-gray-300 mt-1.5 font-medium">
             A portable, honest record of your achievements, verified evidence, and skills gained.
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap w-full sm:w-auto">
           <Button
             variant="primary"
             size="md"
             label="Log Achievement"
             onClick={() => setShowAddModal(true)}
-            className="gap-2"
+            className="gap-2 w-full sm:w-auto justify-center"
           >
             <Plus className="w-4 h-4" />
             Log Achievement
@@ -148,7 +148,7 @@ export default function GrowthPassportPage() {
                 alert("Passport link copied to clipboard!");
               }
             }}
-            className="gap-2"
+            className="gap-2 w-full sm:w-auto justify-center"
           >
             <Share2 className="w-4 h-4" />
             Share Passport

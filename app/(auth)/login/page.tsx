@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth/auth-context";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Eye, EyeOff, ArrowRight } from "lucide-react";
+import { VybeSymbol } from "@/components/ui/vybe-logo";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -28,7 +29,25 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      await login(email);
+      let studentId = 1;
+      let studentName = "";
+      try {
+        const res = await fetch("http://127.0.0.1:8000/students/");
+        if (res.ok) {
+          const data = await res.json();
+          const match = data.students?.find(
+            (s: any) => s.email?.toLowerCase() === email.trim().toLowerCase()
+          );
+          if (match) {
+            studentId = match.id;
+            studentName = match.name;
+          }
+        }
+      } catch {
+        // Fallback if backend offline
+      }
+
+      await login(email, studentName, studentId);
       router.push("/");
     } catch {
       setError("Unable to sign in. Please verify your details.");
@@ -37,17 +56,17 @@ export default function LoginPage() {
     }
   };
 
-  const handleDemoSignIn = async (demoEmail: string, demoName: string) => {
+  const handleDemoSignIn = async (demoEmail: string, demoName: string, id: number = 1) => {
     setLoading(true);
-    await login(demoEmail, demoName);
+    await login(demoEmail, demoName, id);
     router.push("/");
   };
 
   return (
     <div className="w-full max-w-md p-8 rounded-[32px] liquid-glass shadow-2xl border border-white/60 dark:border-white/10 bg-white/80 dark:bg-[#1E1E24]/85 backdrop-blur-2xl">
       <div className="flex flex-col items-center text-center mb-8">
-        <div className="w-12 h-12 rounded-2xl bg-[#1E1E22] dark:bg-white flex items-center justify-center text-[#D3E57A] dark:text-[#1E1E22] font-black text-2xl shadow-md mb-3">
-          V
+        <div className="mb-3 p-2 rounded-2xl bg-[#0D0D12]/60 dark:bg-black/30 border border-white/10 shadow-lg">
+          <VybeSymbol size={48} />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-[#1E1E22] dark:text-white">
           Welcome to VYBE
@@ -110,22 +129,28 @@ export default function LoginPage() {
         <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider text-center">
           Or Quick Demo Login
         </span>
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2.5">
           <button
             type="button"
-            onClick={() => handleDemoSignIn("aarav.patel@srm.edu.in", "Aarav Patel")}
-            className="p-2.5 rounded-xl border border-black/10 dark:border-white/10 text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition-all text-left"
+            onClick={() => handleDemoSignIn("aarav.patel@srmuniversity.ac.in", "Aarav Patel", 1)}
+            className="p-3 rounded-2xl border border-black/10 dark:border-white/10 hover:border-[#D3E57A] text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition-all text-left flex items-center gap-2.5 btn-press"
           >
-            <p className="font-bold text-[#1E1E22] dark:text-white">Aarav Patel</p>
-            <p className="text-[10px] text-gray-400">CS & AI (2nd Year)</p>
+            <img src="/avatars/avatar-1.svg" alt="Aarav" className="w-9 h-9 rounded-xl object-cover shrink-0" />
+            <div className="truncate">
+              <p className="font-bold text-[#1E1E22] dark:text-white truncate">Aarav Patel</p>
+              <p className="text-[10px] text-gray-400">CS & AI (2nd Yr)</p>
+            </div>
           </button>
           <button
             type="button"
-            onClick={() => handleDemoSignIn("riya.sen@srm.edu.in", "Riya Sen")}
-            className="p-2.5 rounded-xl border border-black/10 dark:border-white/10 text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition-all text-left"
+            onClick={() => handleDemoSignIn("riya.sen@srm.edu.in", "Riya Sen", 2)}
+            className="p-3 rounded-2xl border border-black/10 dark:border-white/10 hover:border-[#D9C9F5] text-xs font-semibold hover:bg-black/5 dark:hover:bg-white/5 transition-all text-left flex items-center gap-2.5 btn-press"
           >
-            <p className="font-bold text-[#1E1E22] dark:text-white">Riya Sen</p>
-            <p className="text-[10px] text-gray-400">Business & Tech</p>
+            <img src="/avatars/avatar-2.svg" alt="Riya" className="w-9 h-9 rounded-xl object-cover shrink-0" />
+            <div className="truncate">
+              <p className="font-bold text-[#1E1E22] dark:text-white truncate">Riya Sen</p>
+              <p className="text-[10px] text-gray-400">Business & Tech</p>
+            </div>
           </button>
         </div>
       </div>

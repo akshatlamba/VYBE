@@ -10,6 +10,16 @@ from app.events import router as events_router
 from app.calendar import router as calendar_router
 from app.notifications import router as notifications_router
 from app.community import router as community_router
+from app.database.connection import engine
+from app.database.models import Base
+from app.database.seed_data import seed
+
+# Auto-initialize database tables and seed sample records
+try:
+    Base.metadata.create_all(bind=engine)
+    seed()
+except Exception as e:
+    print(f"Notice: Database init check: {e}")
 
 
 app = FastAPI(

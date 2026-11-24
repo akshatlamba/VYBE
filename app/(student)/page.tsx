@@ -57,11 +57,11 @@ export default function StudentHomePage() {
     <div className="flex flex-col gap-8 py-2">
       {/* Actionable Hero Headline (No duplicate greeting) */}
       <div className="flex flex-col">
-        <h1 className="text-display font-light tracking-tight text-[#1E1E22] dark:text-white leading-[1.1]">
+        <h1 className="text-3xl sm:text-4xl md:text-display font-extrabold tracking-tight text-[#1E1E22] dark:text-white leading-[1.12]">
           3 Deadlines This Week, <br />
-          <span className="font-normal">4 Tasks To Go</span>
+          <span className="font-bold text-[#1E1E22] dark:text-[#D3E57A]">4 Tasks To Go</span>
         </h1>
-        <p className="text-small text-[#4B5563] dark:text-[#D1D5DB] mt-2 font-medium">
+        <p className="text-small sm:text-body text-[#4B5563] dark:text-[#D1D5DB] mt-2.5 font-medium max-w-xl leading-relaxed">
           Your World. Your Guide. Your Growth. Turn signals into actions.
         </p>
       </div>
@@ -90,7 +90,7 @@ export default function StudentHomePage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#E0605E] animate-pulse" />
-            <h2 className="text-h2 font-semibold tracking-tight text-[#1E1E22] dark:text-white">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#1E1E22] dark:text-white">
               World Pulse
             </h2>
           </div>
@@ -182,10 +182,10 @@ export default function StudentHomePage() {
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-h2 font-semibold tracking-tight text-[#1E1E22] dark:text-white">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#1E1E22] dark:text-white">
               Closing Soon
             </h2>
-            <p className="text-caption text-[#4B5563] dark:text-[#D1D5DB] font-medium">
+            <p className="text-caption sm:text-small text-[#4B5563] dark:text-[#D1D5DB] font-medium mt-0.5">
               Verified active listings with impending deadlines
             </p>
           </div>
@@ -203,18 +203,18 @@ export default function StudentHomePage() {
             <Card
               key={opp.id}
               variant="solid"
-              className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
             >
-              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="shrink-0">
+              <div className="flex items-start sm:items-center gap-4 min-w-0">
+                <div className="shrink-0 pt-0.5 sm:pt-0">
                   <ProgressRing
                     progress={opp.id === "opp-003" ? 94 : opp.id === "opp-001" ? 88 : 82}
-                    size={64}
-                    strokeWidth={6}
+                    size={58}
+                    strokeWidth={5}
                     textClassName="text-caption font-bold"
                   />
                 </div>
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-caption font-semibold text-[#4B5563] dark:text-[#D1D5DB]">
                       {opp.organizer}
@@ -228,19 +228,19 @@ export default function StudentHomePage() {
                       {opp.format}
                     </span>
                   </div>
-                  <h4 className="text-body font-bold text-[#1E1E22] dark:text-white">
+                  <h4 className="text-body font-bold text-[#1E1E22] dark:text-white leading-snug">
                     {opp.title}
                   </h4>
                   <div className="text-caption text-[#E0605E] font-semibold flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5" />
+                    <Clock className="w-3.5 h-3.5 shrink-0" />
                     Deadline: {new Date(opp.deadline).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2.5 sm:self-center shrink-0">
-                <Link href={`/radar/${opp.id}`}>
-                  <Button variant="primary" size="sm" label="See Plan">
+              <div className="flex items-center gap-2.5 sm:self-center shrink-0 w-full sm:w-auto">
+                <Link href={`/radar/${opp.id}`} className="w-full sm:w-auto">
+                  <Button variant="primary" size="sm" label="See Plan" className="w-full sm:w-auto justify-center">
                     See Plan
                   </Button>
                 </Link>

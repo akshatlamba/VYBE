@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTheme } from "@/lib/theme/theme-provider";
 import { Button } from "../ui/button";
 import { LiquidGlassHero } from "../ui/liquid-glass-hero";
-import { Plus, Bell, Sun, Moon, Laptop, ShieldCheck, GraduationCap, Building2 } from "lucide-react";
+import { Plus, Bell, Sun, Moon, Laptop, ShieldCheck, GraduationCap, Building2, User, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api/client";
+import { useAuth } from "@/lib/auth/auth-context";
 
 interface HeaderProps {
   currentRole: "student" | "staff" | "admin";
@@ -24,6 +26,8 @@ export function Header({
   userName = "Aarav Patel",
   studentId = 1,
 }: HeaderProps) {
+  const router = useRouter();
+  const { user, logout } = useAuth();
   const { theme, setTheme } = useTheme();
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [showNotif, setShowNotif] = useState(false);
@@ -84,34 +88,32 @@ export function Header({
   const ThemeIcon = theme === "dark" ? Moon : theme === "light" ? Sun : Laptop;
 
   return (
-    <header className="w-full max-w-[1200px] mx-auto flex items-center justify-between py-4 px-4 sm:px-8 xl:px-10 z-20">
+    <header className="w-full max-w-[1200px] mx-auto flex items-center justify-between py-3 sm:py-4 px-3 sm:px-8 xl:px-10 z-20 gap-2">
       {/* Left: Avatar + Greeting */}
-      <Link href="/profile" className="flex items-center gap-2.5 sm:gap-3 group outline-none min-w-0">
-        <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-full ring-2 ring-white/80 dark:ring-white/20 bg-gradient-to-tr from-[#FAD8C6] via-[#F6C9DD] to-[#D9C9F5] flex items-center justify-center font-bold text-body text-[#1E1E22] shadow-sm shrink-0">
-          {userName
-            .split(" ")
-            .map((n) => n[0])
-            .join("")
-            .slice(0, 2)}
+      <Link href="/profile" className="flex items-center gap-2 sm:gap-3 group outline-none min-w-0 shrink">
+        <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full ring-2 ring-white/80 dark:ring-white/20 bg-gradient-to-tr from-[#FAD8C6] via-[#F6C9DD] to-[#D9C9F5] flex items-center justify-center font-bold text-caption sm:text-body text-[#1E1E22] shadow-sm shrink-0 overflow-hidden">
+          {user.avatar_url ? (
+            <img src={user.avatar_url} alt={user.name || userName} className="w-full h-full object-cover" />
+          ) : (
+            (user.name || userName)
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .slice(0, 2)
+          )}
         </div>
-        <div className="flex flex-col text-left truncate">
+        <div className="flex flex-col text-left truncate min-w-0">
           <span
             suppressHydrationWarning
-            className="text-caption font-medium text-[#4B5563] dark:text-[#D1D5DB] leading-tight truncate"
+            className="text-[11px] sm:text-caption font-medium text-[#4B5563] dark:text-[#D1D5DB] leading-tight truncate"
           >
             {greeting}
           </span>
-          <span className="text-small sm:text-body font-semibold text-[#1E1E22] dark:text-white group-hover:text-[#2F6BFF] transition-colors leading-snug truncate max-w-[100px] sm:max-w-none">
-            {userName}
+          <span className="text-caption sm:text-body font-bold text-[#1E1E22] dark:text-white group-hover:text-[#2F6BFF] transition-colors leading-snug truncate max-w-[90px] sm:max-w-none">
+            {user.name || userName}
           </span>
         </div>
       </Link>
-
-      {/* Center: Sample data notice with liquid-glass */}
-      <div className="hidden md:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full liquid-glass text-[11px] font-semibold text-[#1E1E22] dark:text-gray-200 select-none shadow-xs">
-        <span className="w-1.5 h-1.5 rounded-full bg-[#D3E57A]" />
-        Sample Prototype Data
-      </div>
 
       {/* Right Controls: Role switcher, Theme toggle, Round Black Add, Round White Bell */}
       <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
@@ -189,6 +191,27 @@ export function Header({
                 <ShieldCheck className="w-4 h-4" />
                 <span>Admin</span>
               </button>
+              <div className="border-t border-black/5 dark:border-white/5 my-1" />
+              <Link
+                href="/login"
+                onClick={() => setShowRoleMenu(false)}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-small font-medium text-left hover:bg-black/5 dark:hover:bg-white/10 text-[#1E1E22] dark:text-white"
+              >
+                <User className="w-4 h-4 text-gray-400" />
+                <span>Sign In / Switch</span>
+              </Link>
+              <button
+                type="button"
+                onClick={() => {
+                  setShowRoleMenu(false);
+                  logout();
+                  router.push("/login");
+                }}
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-small font-medium text-left hover:bg-red-500/10 text-red-600 dark:text-red-400 transition"
+              >
+                <LogOut className="w-4 h-4 text-red-500" />
+                <span>Sign Out</span>
+              </button>
             </div>
           )}
         </div>
@@ -235,6 +258,30 @@ export function Header({
           </div>
         </LiquidGlassHero>
 
+        {/* Dedicated Sign Out Button */}
+        <LiquidGlassHero
+          cornerRadius={999}
+          displacementScale={64}
+          blurAmount={0.08}
+          saturation={135}
+          aberrationIntensity={2}
+          elasticity={0.28}
+          overLight={theme === "light"}
+          onClick={() => {
+            logout();
+            router.push("/login");
+          }}
+          className="cursor-pointer btn-press"
+        >
+          <div
+            className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-red-500 transition-colors"
+            aria-label="Sign Out"
+            title="Sign Out"
+          >
+            <LogOut className="w-4 h-4 stroke-[1.8]" />
+          </div>
+        </LiquidGlassHero>
+
         {/* Round White Notification Button */}
         <div className="relative" ref={notifMenuRef}>
           <LiquidGlassHero
@@ -261,7 +308,7 @@ export function Header({
           </LiquidGlassHero>
 
           {showNotif && (
-            <div className="absolute right-0 mt-2 w-80 rounded-2xl glass-surface bg-white/95 dark:bg-[#1E1E24]/95 p-4 shadow-xl border border-white/60 dark:border-white/10 z-50 animate-in fade-in zoom-in-95 duration-150">
+            <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] max-w-xs sm:w-80 rounded-2xl glass-surface bg-white/95 dark:bg-[#1E1E24]/95 p-4 shadow-xl border border-white/60 dark:border-white/10 z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="flex items-center justify-between mb-3 pb-2 border-b border-black/5 dark:border-white/5">
                 <span className="text-small font-bold text-[#1E1E22] dark:text-white">
                   Notifications {unreadCount > 0 ? `(${unreadCount})` : ""}

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bg6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="100%" stop-color="#F472B6"/>
+    </linearGradient>
+    <linearGradient id="sweater" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E"/>
+      <stop offset="100%" stop-color="#BE123C"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="60" fill="url(#bg6)"/>
+  <path d="M34 40 C32 60, 36 78, 44 82 C40 70, 38 55, 40 40 Z" fill="#262626"/>
+  <path d="M86 40 C88 60, 84 78, 76 82 C80 70, 82 55, 80 40 Z" fill="#262626"/>
+  <path d="M22 120 C22 92, 38 78, 60 78 C82 78, 98 92, 98 120 Z" fill="url(#sweater)"/>
+  <rect x="53" y="60" width="14" height="20" rx="5" fill="#F2BA9A"/>
+  <ellipse cx="60" cy="50" rx="19" ry="22" fill="#FED7AA"/>
+  <path d="M38 42 C38 24, 48 18, 60 18 C72 18, 82 24, 82 42 C82 46, 82 58, 80 64 C76 44, 76 34, 74 34 L46 34 C44 34, 44 44, 40 64 C38 58, 38 46, 38 42 Z" fill="#171717"/>
+  <path d="M42 34 Q40 48 42 60" stroke="#C084FC" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="52" cy="49" r="2.2" fill="#171717"/>
+  <circle cx="68" cy="49" r="2.2" fill="#171717"/>
+  <path d="M48 44 Q52 42 56 44" stroke="#171717" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <path d="M64 43 Q68 40 72 43" stroke="#171717" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <path d="M54 60 Q60 65 66 60" stroke="#E11D48" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+</svg>

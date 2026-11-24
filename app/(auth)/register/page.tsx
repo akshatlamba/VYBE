@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/select";
 import { Eye, EyeOff } from "lucide-react";
+import { VybeSymbol } from "@/components/ui/vybe-logo";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -31,7 +32,28 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      await login(email, name);
+      let studentId = 1;
+      try {
+        const res = await fetch("http://127.0.0.1:8000/students/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name.trim(),
+            email: email.trim().toLowerCase(),
+            interest: department,
+            skill_level: "Beginner",
+            goal: "Build verified skills and explore opportunities",
+          }),
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.student_id) studentId = data.student_id;
+        }
+      } catch {
+        // Fallback if backend offline
+      }
+
+      await login(email, name, studentId);
       router.push("/onboarding");
     } catch {
       setError("Registration failed. Please try again.");
@@ -43,8 +65,8 @@ export default function RegisterPage() {
   return (
     <div className="w-full max-w-md p-8 rounded-[32px] liquid-glass shadow-2xl border border-white/60 dark:border-white/10 bg-white/80 dark:bg-[#1E1E24]/85 backdrop-blur-2xl">
       <div className="flex flex-col items-center text-center mb-6">
-        <div className="w-12 h-12 rounded-2xl bg-[#1E1E22] dark:bg-white flex items-center justify-center text-[#D3E57A] dark:text-[#1E1E22] font-black text-2xl shadow-md mb-3">
-          V
+        <div className="mb-3 p-2 rounded-2xl bg-[#0D0D12]/60 dark:bg-black/30 border border-white/10 shadow-lg">
+          <VybeSymbol size={48} />
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-[#1E1E22] dark:text-white">
           Create VYBE Account

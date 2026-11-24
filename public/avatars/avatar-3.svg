@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D3E57A"/>
+      <stop offset="100%" stop-color="#70A288"/>
+    </linearGradient>
+    <linearGradient id="turtleneck" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+  </defs>
+  <circle cx="60" cy="60" r="60" fill="url(#bg3)"/>
+  <path d="M22 120 C22 92, 38 76, 60 76 C82 76, 98 92, 98 120 Z" fill="url(#turtleneck)"/>
+  <rect x="49" y="66" width="22" height="14" rx="6" fill="#334155"/>
+  <ellipse cx="60" cy="48" rx="19" ry="22" fill="#E8B48F"/>
+  <path d="M40 40 C38 25, 52 18, 62 18 C74 18, 80 26, 80 40 C75 28, 65 24, 60 25 C52 26, 44 32, 40 40 Z" fill="#1A1A24"/>
+  <circle cx="51" cy="48" r="7" fill="none" stroke="#E2E8F0" stroke-width="1.8"/>
+  <circle cx="69" cy="48" r="7" fill="none" stroke="#E2E8F0" stroke-width="1.8"/>
+  <line x1="58" y1="48" x2="62" y2="48" stroke="#E2E8F0" stroke-width="1.8"/>
+  <circle cx="51" cy="48" r="2" fill="#1E293B"/>
+  <circle cx="69" cy="48" r="2" fill="#1E293B"/>
+  <path d="M46 38 L56 38" stroke="#1A1A24" stroke-width="2" stroke-linecap="round"/>
+  <path d="M64 38 L74 38" stroke="#1A1A24" stroke-width="2" stroke-linecap="round"/>
+  <path d="M55 58 Q60 61 65 58" stroke="#8B4513" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>

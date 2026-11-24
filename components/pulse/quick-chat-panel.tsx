@@ -14,6 +14,7 @@ import {
   Copy,
   Check,
   RotateCw,
+  Plus,
 } from "lucide-react";
 
 interface QuickChatPanelProps {
@@ -39,6 +40,7 @@ export function QuickChatPanel({ isOpen, onClose }: QuickChatPanelProps) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [addedTasks, setAddedTasks] = useState<string[]>([]);
   const panelRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -207,6 +209,53 @@ export function QuickChatPanel({ isOpen, onClose }: QuickChatPanelProps) {
                     <p className="mt-2 pt-2 border-t border-black/5 dark:border-white/5 text-[11px] text-gray-500 dark:text-gray-400">
                       💡 {m.why_this}
                     </p>
+                  )}
+                  {isPulse && m.action_proposals && m.action_proposals.length > 0 && (
+                    <div className="mt-3 pt-2.5 border-t border-black/10 dark:border-white/10 space-y-2">
+                      <span className="text-[10px] font-black text-[#D3E57A] tracking-wider uppercase block">
+                        Action Plan Steps
+                      </span>
+                      {m.action_proposals.map((prop: any, pIdx: number) => {
+                        const isAdded = addedTasks.includes(prop.title);
+                        return (
+                          <div
+                            key={pIdx}
+                            className="flex items-center justify-between gap-2 p-2 rounded-xl bg-black/5 dark:bg-white/5 border border-black/5 dark:border-white/10"
+                          >
+                            <span className="text-xs font-semibold text-black dark:text-white truncate">
+                              {prop.title}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setAddedTasks((prev) =>
+                                  prev.includes(prop.title)
+                                    ? prev.filter((t) => t !== prop.title)
+                                    : [...prev, prop.title]
+                                )
+                              }
+                              className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold transition-all shrink-0 cursor-pointer ${
+                                isAdded
+                                  ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 border border-emerald-500/40"
+                                  : "bg-[#D3E57A] text-[#0D0D12] hover:bg-[#c4d869] shadow-sm font-extrabold"
+                              }`}
+                            >
+                              {isAdded ? (
+                                <>
+                                  <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-300" />
+                                  <span>Added</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Plus className="w-3 h-3 text-[#0D0D12]" />
+                                  <span>Add</span>
+                                </>
+                              )}
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
                   )}
                   {isPulse && (
                     <button

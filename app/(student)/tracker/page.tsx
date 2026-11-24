@@ -83,10 +83,10 @@ export default function TrackerPage() {
             <KanbanSquare className="w-3.5 h-3.5" />
             ACTION TRACKER
           </div>
-          <h1 className="text-display font-light tracking-tight text-[#1E1E22] dark:text-white leading-tight">
-            Action <span className="font-normal">Tracker</span>
+          <h1 className="text-3xl sm:text-4xl md:text-display font-extrabold tracking-tight text-[#1E1E22] dark:text-white leading-tight">
+            Action <span className="font-bold text-[#1E1E22] dark:text-[#D3E57A]">Tracker</span>
           </h1>
-          <p className="text-small text-[#6B7280] dark:text-gray-400 mt-1">
+          <p className="text-small sm:text-body text-[#4B5563] dark:text-gray-300 mt-1.5 font-medium">
             Deadlines, preparation tasks, team formation, and outcome continuity.
           </p>
         </div>

@@ -101,10 +101,10 @@ export default function OpportunityRadarPage() {
             <Sparkles className="w-3.5 h-3.5" />
             DECISION INTELLIGENCE
           </div>
-          <h1 className="text-display font-light tracking-tight text-[#1E1E22] dark:text-white leading-[1.1]">
-            Opportunity <span className="font-normal">Radar</span>
+          <h1 className="text-3xl sm:text-4xl md:text-display font-extrabold tracking-tight text-[#1E1E22] dark:text-white leading-[1.12]">
+            Opportunity <span className="font-bold text-[#1E1E22] dark:text-[#D3E57A]">Radar</span>
           </h1>
-          <p className="text-small text-[#6B7280] dark:text-gray-400 mt-1">
+          <p className="text-small sm:text-body text-[#4B5563] dark:text-gray-300 mt-1.5 font-medium">
             Explainable fit scores, hard eligibility verification, and readiness guidance.
           </p>
         </div>
@@ -280,9 +280,9 @@ export default function OpportunityRadarPage() {
                   {item.fit.reasons[0]}
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0">
-                  <Link href={`/radar/${item.id}`}>
-                    <Button variant="primary" size="md" label="See Plan & Receipt" className="gap-2">
+                <div className="flex items-center gap-3 shrink-0 w-full sm:w-auto">
+                  <Link href={`/radar/${item.id}`} className="w-full sm:w-auto">
+                    <Button variant="primary" size="md" label="See Plan & Receipt" className="w-full sm:w-auto justify-center gap-2">
                       See Plan & Receipt
                       <ArrowRight className="w-4 h-4" />
                     </Button>

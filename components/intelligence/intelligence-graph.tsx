@@ -61,7 +61,7 @@ export function IntelligenceGraphViewer() {
     connections[activeSignal.id] || connections["sig-001"];
 
   return (
-    <Card className="p-6 rounded-[28px] bg-white/70 dark:bg-[#1C1C22]/80 backdrop-blur-xl border border-black/5 dark:border-white/10 flex flex-col gap-6 shadow-sm">
+    <Card className="p-4 sm:p-6 rounded-[24px] sm:rounded-[28px] bg-white/70 dark:bg-[#1C1C22]/80 backdrop-blur-xl border border-black/5 dark:border-white/10 flex flex-col gap-5 sm:gap-6 shadow-sm">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D3E57A]/30 text-[#1E1E22] dark:text-[#D3E57A] text-caption font-bold mb-1">
@@ -82,10 +82,10 @@ export function IntelligenceGraphViewer() {
             <button
               key={sig.id}
               onClick={() => setSelectedSignalIndex(idx)}
-              className={`px-3 py-1.5 rounded-full text-caption font-semibold transition-all shrink-0 ${
+              className={`px-3 py-1.5 rounded-full text-caption font-bold transition-all shrink-0 cursor-pointer ${
                 selectedSignalIndex === idx
                   ? "bg-[#1E1E22] text-white dark:bg-white dark:text-[#1E1E22] shadow-xs"
-                  : "bg-black/5 dark:bg-white/5 text-gray-600 dark:text-gray-300 hover:bg-black/10"
+                  : "bg-black/[0.06] hover:bg-black/10 text-[#4B5563] dark:bg-white/10 dark:text-gray-200 dark:hover:bg-white/15 border border-black/5 dark:border-white/10"
               }`}
             >
               Signal {idx + 1}

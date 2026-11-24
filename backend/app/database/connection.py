@@ -13,16 +13,23 @@ load_dotenv(BASE_DIR / ".env")
 # Read the private database connection string
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL is missing from the .env file")
+# Gracefully fall back to local SQLite if DATABASE_URL is not provided or relative
+if not DATABASE_URL or DATABASE_URL.strip() == "":
+    db_path = (BASE_DIR / "vybe_dev.db").resolve()
+    DATABASE_URL = f"sqlite:///{db_path}"
+elif DATABASE_URL.startswith("sqlite:///./"):
+    rel_name = DATABASE_URL.replace("sqlite:///./", "")
+    db_path = (BASE_DIR / rel_name).resolve()
+    DATABASE_URL = f"sqlite:///{db_path}"
 
-# Tell SQLAlchemy to use Psycopg 3
+# Tell SQLAlchemy to use Psycopg 3 for PostgreSQL
 if DATABASE_URL.startswith("postgresql://"):
     DATABASE_URL = DATABASE_URL.replace(
         "postgresql://",
         "postgresql+psycopg://",
         1
     )
+
 def get_db():
     db = SessionLocal()
 
@@ -32,10 +39,16 @@ def get_db():
         db.close()
 
 # Create the database engine
-engine = create_engine(
-    DATABASE_URL,
-    pool_pre_ping=True
-)
+if DATABASE_URL.startswith("sqlite"):
+    engine = create_engine(
+        DATABASE_URL,
+        connect_args={"check_same_thread": False}
+    )
+else:
+    engine = create_engine(
+        DATABASE_URL,
+        pool_pre_ping=True
+    )
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
