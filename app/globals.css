@@ -385,3 +385,38 @@ aside.sidebar-fixed {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(120, 120, 130, 0.4);
 }
+
+/* ==============================================================================
+   PRINT-FRIENDLY RECEIPT STYLING
+   ============================================================================== */
+@media print {
+  .sidebar-fixed,
+  aside,
+  header,
+  nav,
+  .blob-container,
+  .btn-press,
+  button,
+  a[href="/radar"] {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .print-receipt-card {
+    border: 2px solid #000 !important;
+    box-shadow: none !important;
+    background: white !important;
+    color: black !important;
+    page-break-inside: avoid;
+  }
+}

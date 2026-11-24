@@ -19,8 +19,10 @@ import {
   ArrowRight,
   ChevronRight,
   ExternalLink,
+  Download,
 } from "lucide-react";
 import { APPLICATIONS_STORE, Application } from "@/lib/data/mock-db";
+import { api } from "@/lib/api/client";
 
 export default function TrackerPage() {
   const [activeTab, setActiveTab] = useState<string>("preparing");
@@ -89,11 +91,28 @@ export default function TrackerPage() {
           </p>
         </div>
 
-        <Link href="/radar">
-          <Button variant="secondary" size="md" label="Discover More Opportunities" className="gap-2">
-            + Discover More Opportunities
-          </Button>
-        </Link>
+        <div className="flex items-center gap-2 flex-wrap">
+          <a
+            href={api.events.getCalendarExportUrl(1)}
+            download="vybe_student_calendar.ics"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white/80 dark:bg-white/10 hover:bg-black/5 dark:hover:bg-white/15 text-[#1E1E22] dark:text-white border border-black/5 dark:border-white/10 text-caption font-semibold transition-all btn-press shadow-xs"
+            title="Export saved events as standard iCalendar .ics file"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Export Calendar (.ics)</span>
+          </a>
+
+          <Link href="/radar">
+            <Button variant="secondary" size="md" label="Discover More Opportunities" className="gap-2">
+              + Discover More Opportunities
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+      {/* Calendar Export Note */}
+      <div className="px-4 py-2.5 rounded-2xl bg-black/[0.02] dark:bg-white/[0.03] border border-black/5 dark:border-white/5 flex items-center justify-between text-caption text-[#6B7280] dark:text-gray-400">
+        <span>🗓️ <strong>Calendar Sync:</strong> Watchlist events can be exported as an <code>.ics</code> file for Google Calendar, Apple Calendar, and Outlook. Automatic two-way cloud synchronization is not configured.</span>
       </div>
 
       {/* Pill Tabs with Counts (Lime active tab with white count circle) */}

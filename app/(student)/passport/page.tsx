@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { FilterChips } from "@/components/ui/filter-chips";
 import { VerificationBadge, SkillTag } from "@/components/ui/badge";
 import { TimelineItem } from "@/components/ui/timeline-item";
+import { Modal } from "@/components/ui/modal";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Award,
   ShieldCheck,
@@ -22,6 +25,13 @@ import { OUTCOMES_STORE, GrowthOutcome, PERSONAS } from "@/lib/data/mock-db";
 export default function GrowthPassportPage() {
   const [filter, setFilter] = useState<string>("all");
   const [outcomes, setOutcomes] = useState<GrowthOutcome[]>(OUTCOMES_STORE);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newRole, setNewRole] = useState("Project Contributor");
+  const [newReflection, setNewReflection] = useState("");
+  const [newSkills, setNewSkills] = useState("");
+  const [newEvidenceUrl, setNewEvidenceUrl] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const student = PERSONAS.beginner;
 
   React.useEffect(() => {
@@ -39,6 +49,45 @@ export default function GrowthPassportPage() {
     }
     loadOutcomes();
   }, []);
+
+  const handleCreateOutcome = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTitle.trim()) return;
+
+    setIsSubmitting(true);
+    try {
+      const skillsArray = newSkills
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
+
+      const res = await fetch("/api/outcomes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: newTitle.trim(),
+          participation: newRole.trim(),
+          reflection: newReflection.trim() || "Applied skills in project.",
+          skills_gained: skillsArray.length > 0 ? skillsArray : ["Problem Solving"],
+          evidence_url: newEvidenceUrl.trim() || undefined,
+        }),
+      });
+
+      const json = await res.json();
+      if (json.success && json.data) {
+        setOutcomes((prev) => [json.data, ...prev]);
+        setShowAddModal(false);
+        setNewTitle("");
+        setNewReflection("");
+        setNewSkills("");
+        setNewEvidenceUrl("");
+      }
+    } catch {
+      alert("Failed to save achievement.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Evidence state metrics
   const totalRecords = outcomes.length;
@@ -73,6 +122,17 @@ export default function GrowthPassportPage() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Button
+            variant="primary"
+            size="md"
+            label="Log Achievement"
+            onClick={() => setShowAddModal(true)}
+            className="gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Log Achievement
+          </Button>
+
           <Button
             variant="secondary"
             size="md"
@@ -239,6 +299,74 @@ export default function GrowthPassportPage() {
           </TimelineItem>
         ))}
       </div>
+
+      {/* Log Achievement Modal */}
+      <Modal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        title="Log Achievement to Growth Passport"
+      >
+        <form onSubmit={handleCreateOutcome} className="flex flex-col gap-4">
+          <Input
+            label="Project or Achievement Title"
+            placeholder="e.g. Autonomous Customer Support Bot"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            required
+          />
+
+          <Input
+            label="Role / Contribution"
+            placeholder="e.g. Lead Developer / Team Member"
+            value={newRole}
+            onChange={(e) => setNewRole(e.target.value)}
+            required
+          />
+
+          <Textarea
+            label="Key Learnings & Reflection"
+            placeholder="Describe what you built, trade-offs made, and how you solved challenges..."
+            value={newReflection}
+            onChange={(e) => setNewReflection(e.target.value)}
+          />
+
+          <Input
+            label="Skills Gained (comma-separated)"
+            placeholder="e.g. Python, REST APIs, Fastify, Docker"
+            value={newSkills}
+            onChange={(e) => setNewSkills(e.target.value)}
+          />
+
+          <Input
+            label="Evidence URL (GitHub / Live Demo / Docs)"
+            placeholder="https://github.com/your-username/project-repo"
+            value={newEvidenceUrl}
+            onChange={(e) => setNewEvidenceUrl(e.target.value)}
+            helperText="If a valid URL is provided, record is marked 'Link-Supported'. If empty, it is 'Self-Reported'."
+          />
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-black/5 dark:border-white/5">
+            <Button
+              type="button"
+              variant="ghost"
+              size="md"
+              label="Cancel"
+              onClick={() => setShowAddModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="md"
+              label={isSubmitting ? "Saving..." : "Save to Passport"}
+              disabled={isSubmitting || !newTitle.trim()}
+            >
+              {isSubmitting ? "Saving..." : "Save to Passport"}
+            </Button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,10 +21,23 @@ import {
   Check,
 } from "lucide-react";
 import { INITIAL_SIGNALS, INITIAL_OPPORTUNITIES, PERSONAS } from "@/lib/data/mock-db";
+import { api } from "@/lib/api/client";
+import { IntelligenceGraphViewer } from "@/components/intelligence/intelligence-graph";
 
 export default function StudentHomePage() {
   const [activeTaskTab, setActiveTaskTab] = useState("all");
   const [savedSignals, setSavedSignals] = useState<string[]>([]);
+  const [signals, setSignals] = useState<any[]>(INITIAL_SIGNALS.slice(0, 3));
+
+  useEffect(() => {
+    async function loadSignals() {
+      const res = await api.worldPulse.getSignals();
+      if (res.success && res.data && res.data.length > 0) {
+        setSignals(res.data.slice(0, 3));
+      }
+    }
+    loadSignals();
+  }, []);
 
   // Dynamic progress calculation computed directly from data
   const totalTasks = 12;
@@ -32,7 +45,6 @@ export default function StudentHomePage() {
   const pendingTasks = totalTasks - completedTasks;
   const progress = Math.round((completedTasks / totalTasks) * 100); // 8/12 = 67%
 
-  const signals = INITIAL_SIGNALS.slice(0, 3);
   const closingSoonOpps = INITIAL_OPPORTUNITIES.filter((o) => o.status === "active").slice(0, 3);
 
   const toggleSaveSignal = (id: string) => {
@@ -69,6 +81,9 @@ export default function StudentHomePage() {
           { id: "task-2", title: "Review Supabase RLS policies", due: "Tomorrow" },
         ]}
       />
+
+      {/* VYBE Intelligence Graph: Signal to Growth Pipeline */}
+      <IntelligenceGraphViewer />
 
       {/* Section: World Pulse (Dated, Sourced Signals) */}
       <section className="flex flex-col gap-4">

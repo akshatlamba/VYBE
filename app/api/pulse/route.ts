@@ -3,10 +3,15 @@ import { getStudentProfile, getWorldSignals, getAllOpportunities } from "@/lib/d
 import { PulseMessageSchema } from "@/lib/validations/api-schemas";
 import { getAIProvider } from "@/lib/ai/provider";
 
-// Basic in-memory rate-limiter: max 10 requests per minute per IP/persona
+const FASTAPI_BASE_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "http://127.0.0.1:8000";
+
+// Basic in-memory rate-limiter: max 15 requests per minute per IP/persona
 const requestTimestamps: Map<string, number[]> = new Map();
 
-function checkRateLimit(key: string, limit: number = 10, windowMs: number = 60000): boolean {
+function checkRateLimit(key: string, limit: number = 15, windowMs: number = 60000): boolean {
   const now = Date.now();
   const timestamps = requestTimestamps.get(key) || [];
   const validTimestamps = timestamps.filter((t) => now - t < windowMs);
@@ -40,6 +45,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const language = body.language || "en";
+
+    // 1. First attempt: Query real FastAPI backend with Gemini integration
+    try {
+      const fastApiRes = await fetch(`${FASTAPI_BASE_URL}/pulse/ask`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          student_id: body.student_id || 1,
+          question: validated.message,
+          signal_id: validated.signal_id,
+          persona_id: validated.persona_id,
+          language: language,
+        }),
+      });
+
+      if (fastApiRes.ok) {
+        const fastApiJson = await fastApiRes.json();
+        return NextResponse.json({
+          success: true,
+          data: {
+            content: fastApiJson.content,
+            why_this: fastApiJson.why_this,
+            action_proposals: fastApiJson.action_proposals,
+            opportunity_ids: fastApiJson.opportunity_ids,
+            is_live_ai: fastApiJson.is_live_ai,
+            model_used: fastApiJson.model_used,
+            provider: fastApiJson.provider,
+            notice: fastApiJson.notice,
+          },
+        });
+      }
+    } catch {
+      // FastAPI is offline, gracefully fall through to structured provider
+    }
+
+    // 2. Fallback: Contextual provider with explicit offline indicator
     const student = getStudentProfile(validated.persona_id);
     const signal = validated.signal_id
       ? getWorldSignals().find((s) => s.id === validated.signal_id)
@@ -55,7 +97,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: result,
+      data: {
+        ...result,
+        is_live_ai: false,
+        provider: "Deterministic Student Guidance Engine",
+        notice: "Operating in offline guidance mode. Personalization is generated deterministically from your Student DNA without unverified AI hallucinations.",
+      },
     });
   } catch (err: any) {
     return NextResponse.json(

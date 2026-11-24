@@ -315,7 +315,7 @@ export default function OpportunityDetailPage() {
         {/* Right Column: OPPORTUNITY RECEIPT */}
         <div className="flex flex-col gap-4">
           <div className="sticky top-6">
-            <div className="p-6 sm:p-7 rounded-[28px] bg-white dark:bg-[#1E1E24] shadow-xl border border-black/10 dark:border-white/10 text-[#1E1E22] dark:text-white flex flex-col gap-5 relative overflow-hidden">
+            <div className="print-receipt-card p-6 sm:p-7 rounded-[28px] bg-white dark:bg-[#1E1E24] shadow-xl border border-black/10 dark:border-white/10 text-[#1E1E22] dark:text-white flex flex-col gap-5 relative overflow-hidden">
               {/* Receipt Header */}
               <div className="border-b border-dashed border-gray-300 dark:border-gray-700 pb-4 text-center">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1E1E22] text-white text-caption font-bold mb-2">

@@ -14,14 +14,18 @@ import { Textarea } from "../ui/textarea";
 import { Select } from "../ui/select";
 import { SkillTag } from "../ui/badge";
 import { Plus, CheckCircle2, BookmarkPlus, Sparkles } from "lucide-react";
+import { AuthProvider, useAuth } from "@/lib/auth/auth-context";
+import { QuickChatPanel } from "../pulse/quick-chat-panel";
 
 interface AppShellProps {
   children: React.ReactNode;
 }
 
-export function AppShell({ children }: AppShellProps) {
+function AppShellContent({ children }: AppShellProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { user } = useAuth();
+  const [quickPulseOpen, setQuickPulseOpen] = useState(false);
 
   // Role management state (student / staff / admin)
   const [role, setRole] = useState<"student" | "staff" | "admin">(() => {
@@ -106,6 +110,23 @@ export function AppShell({ children }: AppShellProps) {
     }, 1200);
   };
 
+  // Skip global layout chrome on standalone auth pages
+  const isAuthPage = pathname === "/login" || pathname === "/register";
+  if (isAuthPage) {
+    return (
+      <div className="min-h-screen flex flex-col relative text-[#1E1E22] dark:text-white overflow-x-hidden w-full">
+        <div className="blob-container" aria-hidden="true">
+          <div className="blob blob-peach" />
+          <div className="blob blob-lavender" />
+          <div className="blob blob-lime" />
+        </div>
+        <main className="flex-1 flex items-center justify-center p-4">
+          {children}
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col relative text-[#1E1E22] dark:text-white overflow-x-hidden w-full">
       {/* Background Blobs for Liquid Glass */}
@@ -116,7 +137,7 @@ export function AppShell({ children }: AppShellProps) {
       </div>
 
       {/* Desktop Sidebar (>=1024px) */}
-      <Sidebar items={navItems} />
+      <Sidebar items={navItems} onOpenQuickPulse={() => setQuickPulseOpen(true)} />
 
       {/* Tablet Icon Rail (768px - 1023px) */}
       <IconRail items={navItems} />
@@ -128,6 +149,8 @@ export function AppShell({ children }: AppShellProps) {
           currentRole={role}
           onRoleChange={handleRoleChange}
           onOpenQuickAction={() => setQuickActionOpen(true)}
+          userName={user.name}
+          studentId={user.id}
         />
 
         {/* Page Container */}
@@ -138,6 +161,12 @@ export function AppShell({ children }: AppShellProps) {
 
       {/* Mobile Floating Bottom Navigation (<768px) */}
       <BottomNav items={navItems} />
+
+      {/* PULSE Quick Chat Side Panel */}
+      <QuickChatPanel
+        isOpen={quickPulseOpen}
+        onClose={() => setQuickPulseOpen(false)}
+      />
 
       {/* Quick Action Modal (Add Task or Log Outcome) */}
       <Modal
@@ -278,5 +307,13 @@ export function AppShell({ children }: AppShellProps) {
         )}
       </Modal>
     </div>
+  );
+}
+
+export function AppShell({ children }: AppShellProps) {
+  return (
+    <AuthProvider>
+      <AppShellContent>{children}</AppShellContent>
+    </AuthProvider>
   );
 }

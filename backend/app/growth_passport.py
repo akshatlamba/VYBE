@@ -115,6 +115,9 @@ def serialize_project(project):
     )
 
     total = len(project.milestones)
+    has_links = any(bool(e.url and e.url.startswith("http")) for e in project.evidence)
+    explicit_status = getattr(project, "verification_status", None)
+    verification = explicit_status if explicit_status else ("link_supported" if has_links else "self_reported")
 
     return {
         "id": project.id,
@@ -123,6 +126,7 @@ def serialize_project(project):
         "description": project.description,
         "category": project.category,
         "status": project.status,
+        "verification": verification,
         "progress": {
             "total_milestones": total,
             "completed_milestones": completed,
@@ -386,3 +390,51 @@ def add_project_evidence(
         "message": "Project evidence added successfully.",
         "evidence": serialize_evidence(evidence)
     }
+
+
+# -----------------------------------
+# GROWTH PASSPORT SUMMARY
+# GET /growth-passport/summary/{student_id}
+# -----------------------------------
+
+@router.get("/summary/{student_id}")
+def get_growth_summary(
+    student_id: int,
+    db: Session = Depends(get_db)
+):
+    student = db.query(Student).filter(Student.id == student_id).first()
+    if not student:
+        raise HTTPException(
+            status_code=404,
+            detail="Student not found."
+        )
+
+    projects = db.query(Project).filter(
+        Project.student_id == student_id
+    ).all()
+
+    total = len(projects)
+    verified = sum(1 for p in projects if getattr(p, "verification_status", None) == "verified")
+    link_supported = sum(
+        1 for p in projects
+        if getattr(p, "verification_status", None) == "link_supported" or any(e.url for e in p.evidence)
+    )
+    self_reported = max(0, total - verified - link_supported)
+
+    skills = set()
+    for p in projects:
+        if p.category:
+            skills.add(p.category)
+        for e in p.evidence:
+            if e.evidence_type:
+                skills.add(e.evidence_type.replace("_", " ").title())
+
+    return {
+        "student_id": student_id,
+        "total_records": total,
+        "verified_count": verified,
+        "link_supported_count": link_supported,
+        "self_reported_count": self_reported,
+        "skills_gained": list(skills)
+    }
+

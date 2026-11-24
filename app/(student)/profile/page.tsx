@@ -9,6 +9,7 @@ import { Toggle } from "@/components/ui/checkbox";
 import { SkillTag } from "@/components/ui/badge";
 import { useTheme } from "@/lib/theme/theme-provider";
 import { PERSONAS, StudentProfile } from "@/lib/data/mock-db";
+import { api } from "@/lib/api/client";
 import {
   User,
   Shield,
@@ -33,12 +34,40 @@ export default function ProfileSettingsPage() {
   const [availability, setAvailability] = useState(profile.availability);
   const [publicPassport, setPublicPassport] = useState(profile.sharing_prefs.public_passport);
   const [shareAggregates, setShareAggregates] = useState(profile.sharing_prefs.share_aggregates);
+  const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
 
-  const handleSave = (e: React.FormEvent) => {
+  React.useEffect(() => {
+    async function loadProfile() {
+      const res = await api.students.getProfile(1);
+      if (res.success && res.data) {
+        if (res.data.name) setName(res.data.name);
+        if (res.data.academic_year) setAcademicYear(res.data.academic_year);
+        if (res.data.department) setDepartment(res.data.department);
+        if (res.data.budget_max !== undefined) setBudgetMax(Number(res.data.budget_max));
+        if (res.data.availability) setAvailability(res.data.availability);
+        setProfile((prev) => ({ ...prev, ...res.data }));
+      }
+    }
+    loadProfile();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSavedSuccess(true);
-    setTimeout(() => setSavedSuccess(false), 2000);
+    setSaving(true);
+    try {
+      await api.students.updateProfile(1, {
+        name,
+        academic_year: academicYear,
+        department,
+        budget_max: budgetMax,
+        availability,
+      });
+      setSavedSuccess(true);
+      setTimeout(() => setSavedSuccess(false), 2500);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (

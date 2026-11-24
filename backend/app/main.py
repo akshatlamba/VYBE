@@ -1,18 +1,30 @@
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.students import router as student_router
 from app.pulse import router as pulse_router
 from app.world_action import router as world_action_router
 from app.growth_passport import router as growth_passport_router
 from app.events import router as events_router
+from app.calendar import router as calendar_router
 from app.notifications import router as notifications_router
+from app.community import router as community_router
 
 
 app = FastAPI(
     title="VYBE API",
     description="Backend for the VYBE Student Growth Ecosystem",
     version="1.0.0"
+)
+
+# Enable CORS for local Next.js frontend and student clients
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -67,3 +79,12 @@ app.include_router(
     prefix="/events",
     tags=["Events & Watchlist"]
 )
+
+
+app.include_router(
+    calendar_router,
+    prefix="/calendar",
+    tags=["Student Calendar"]
+)
+
+app.include_router(community_router, prefix="/community", tags=["Community"])

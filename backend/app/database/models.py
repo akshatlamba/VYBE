@@ -500,3 +500,170 @@ class Notification(Base):
         "Reminder",
         back_populates="notification"
     )
+
+# ==========================================
+# PERSONAL CALENDAR
+# ==========================================
+
+class CalendarEntry(Base):
+    __tablename__ = "calendar_entries"
+
+    id = Column(Integer, primary_key=True, index=True)
+    student_id = Column(
+        Integer,
+        ForeignKey("students.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+
+    title = Column(String(200), nullable=False)
+    description = Column(Text, nullable=True)
+    category = Column(String(40), nullable=False, default="Personal")
+
+    start_at = Column(DateTime(timezone=True), nullable=False)
+    end_at = Column(DateTime(timezone=True), nullable=True)
+    all_day = Column(Boolean, nullable=False, default=False)
+
+    reminder_enabled = Column(Boolean, nullable=False, default=False)
+    reminder_minutes_before = Column(Integer, nullable=False, default=30)
+
+    created_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now().astimezone()
+    )
+    updated_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=lambda: datetime.now().astimezone(),
+        onupdate=lambda: datetime.now().astimezone()
+    )
+
+
+# ==========================================
+# COMMUNITY: DISCUSSION POSTS
+# ==========================================
+
+class CommunityPost(Base):
+    __tablename__ = "community_posts"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    student_id = Column(
+        Integer,
+        ForeignKey("students.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+
+    signal_id = Column(String(100), nullable=True, index=True)
+    post_type = Column(String(30), nullable=False, default="discussion")
+    content = Column(Text, nullable=False)
+    source_url = Column(String(1000), nullable=True)
+
+    status = Column(String(30), nullable=False, default="visible", index=True)
+
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = Column(
+        DateTime,
+        nullable=False,
+        default=datetime.utcnow,
+        onupdate=datetime.utcnow
+    )
+
+
+# ==========================================
+# COMMUNITY: COMMENTS AND REPLIES
+# ==========================================
+
+class CommunityComment(Base):
+    __tablename__ = "community_comments"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    post_id = Column(
+        Integer,
+        ForeignKey("community_posts.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+
+    student_id = Column(
+        Integer,
+        ForeignKey("students.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+
+    parent_comment_id = Column(
+        Integer,
+        ForeignKey("community_comments.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True
+    )
+
+    content = Column(Text, nullable=False)
+    status = Column(String(30), nullable=False, default="visible", index=True)
+
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+# ==========================================
+# COMMUNITY: HELPFUL VOTES
+# ==========================================
+
+class CommunityVote(Base):
+    __tablename__ = "community_votes"
+
+    __table_args__ = (
+        UniqueConstraint(
+            "student_id",
+            "post_id",
+            name="unique_student_community_post_vote"
+        ),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    post_id = Column(
+        Integer,
+        ForeignKey("community_posts.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+
+    student_id = Column(
+        Integer,
+        ForeignKey("students.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+# ==========================================
+# COMMUNITY: REPORTS
+# ==========================================
+
+class CommunityReport(Base):
+    __tablename__ = "community_reports"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    reporter_student_id = Column(
+        Integer,
+        ForeignKey("students.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True
+    )
+
+    target_type = Column(String(20), nullable=False)
+    target_id = Column(Integer, nullable=False, index=True)
+
+    reason = Column(String(50), nullable=False)
+    details = Column(Text, nullable=True)
+
+    status = Column(String(30), nullable=False, default="pending", index=True)
+
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
