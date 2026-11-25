@@ -380,8 +380,8 @@ Built for PRASUNEX Innovathon 2026.
 | Team member | Contribution |
 |---|---|
 | Ashutosh Singh | UI/UX Design and Architecture |
-| Piyush | Backend Development and Technical Pitch |
-| Aashi | Frontend Development and Pitch |
+| Piyush | Backend Development and Database|
+| Aashi | Frontend Development |
 | Akshat | Frontend Development |
 | Anugrah | Database Development |
 
