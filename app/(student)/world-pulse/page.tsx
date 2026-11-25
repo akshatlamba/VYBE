@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   Clock3,
   ExternalLink,
+  Eye,
   Globe2,
   Search,
   Sparkles,
@@ -32,6 +33,32 @@ type Signal = {
   source_status?: string;
   is_sample?: boolean;
   difficulty?: string;
+  image_url?: string;
+  clicks?: number;
+};
+
+const SIGNAL_FALLBACK_IMAGES: Record<string, string> = {
+  "sig-001": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
+  "sig-002": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop",
+  "sig-003": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop",
+  "sig-004": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800&auto=format&fit=crop",
+  "sig-005": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800&auto=format&fit=crop",
+  "sig-006": "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800&auto=format&fit=crop",
+  AI: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop",
+  Hardware: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop",
+  "Web Development": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800&auto=format&fit=crop",
+  Research: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?q=80&w=800&auto=format&fit=crop",
+  Technology: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=800&auto=format&fit=crop",
+  default: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop",
+};
+
+const SIGNAL_FALLBACK_CLICKS: Record<string, number> = {
+  "sig-001": 420,
+  "sig-002": 280,
+  "sig-003": 615,
+  "sig-004": 185,
+  "sig-005": 340,
+  "sig-006": 520,
 };
 
 const CATEGORIES = [
@@ -133,6 +160,26 @@ export default function WorldPulsePage() {
   const formatDate = (value: string) => {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return "Date unavailable";
+    return date.toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  const formatRelativeTime = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Recently";
+    const now = new Date();
+    const diffMs = now.getTime() - date.getTime();
+    const diffMins = Math.floor(diffMs / (1000 * 60));
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffMins < 60 && diffMins >= 0) return `${Math.max(1, diffMins)} min ago`;
+    if (diffHours < 24 && diffHours >= 0) return `${diffHours}h ago`;
+    if (diffDays < 30 && diffDays >= 0) return `${diffDays}d ago`;
+
     return date.toLocaleDateString("en-IN", {
       day: "numeric",
       month: "short",
@@ -302,12 +349,29 @@ export default function WorldPulsePage() {
         </div>
 
         {loading ? (
-          <div className="grid gap-4 md:grid-cols-2">
-            {[1, 2, 3, 4].map((item) => (
+          <div className="grid gap-5 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
               <div
                 key={item}
-                className="h-64 animate-pulse rounded-3xl border border-white/50 bg-white/50 dark:border-white/10 dark:bg-white/5"
-              />
+                className="overflow-hidden rounded-3xl border border-black/5 bg-white/70 shadow-sm dark:border-white/10 dark:bg-[#1A1A23]/80 animate-pulse flex flex-col"
+              >
+                <div className="aspect-[16/10] w-full bg-slate-200 dark:bg-white/10" />
+                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <div className="h-3 w-20 rounded bg-slate-200 dark:bg-white/10" />
+                      <div className="h-3 w-16 rounded bg-slate-200 dark:bg-white/10" />
+                    </div>
+                    <div className="h-4 w-5/6 rounded bg-slate-200 dark:bg-white/10 pt-2" />
+                    <div className="h-3 w-full rounded bg-slate-200 dark:bg-white/5" />
+                    <div className="h-3 w-4/5 rounded bg-slate-200 dark:bg-white/5" />
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="h-6 w-16 rounded bg-slate-200 dark:bg-white/10" />
+                    <div className="h-6 w-16 rounded bg-slate-200 dark:bg-white/10" />
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         ) : error ? (
@@ -331,75 +395,101 @@ export default function WorldPulsePage() {
             </p>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-5 sm:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {filteredSignals.map((signal) => {
               const isSaved = saved.includes(signal.id);
-              const style =
-                CATEGORY_STYLES[signal.category] ||
-                "bg-gray-100 text-gray-700 dark:bg-white/10 dark:text-gray-300";
+              const imgSrc =
+                signal.image_url ||
+                SIGNAL_FALLBACK_IMAGES[signal.id] ||
+                SIGNAL_FALLBACK_IMAGES[signal.category] ||
+                SIGNAL_FALLBACK_IMAGES.default;
 
               return (
                 <article
                   key={signal.id}
-                  className="group flex flex-col rounded-3xl border border-white/70 bg-white/70 p-5 shadow-sm backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-[#202027]/75"
+                  className="group flex flex-col overflow-hidden rounded-[24px] border border-black/[0.08] bg-white/80 shadow-sm backdrop-blur-2xl transition duration-300 hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-[#1A1A23]/85"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <span className={`rounded-full px-3 py-1 text-[11px] font-bold ${style}`}>
-                      {signal.category || "Technology"}
-                    </span>
+                  {/* Top Cover Image with Inspo Badges & Bookmark */}
+                  <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-900">
+                    <img
+                      src={imgSrc}
+                      alt={signal.title}
+                      loading="lazy"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = SIGNAL_FALLBACK_IMAGES.default;
+                      }}
+                      className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 pointer-events-none" />
+
+                    {/* Source / Publisher pill overlay (top left) */}
+                    <div className="absolute top-3 left-3 z-10">
+                      <span className="rounded-md border border-white/20 bg-black/75 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-white shadow-sm backdrop-blur-md">
+                        {signal.source_name || signal.category || "World Pulse"}
+                      </span>
+                    </div>
+
+                    {/* Bookmark button overlay (top right) */}
                     <button
                       onClick={() => toggleSave(signal.id)}
-                      className="rounded-full border border-black/10 p-2 transition hover:bg-[#D3E57A]/30 dark:border-white/10"
+                      className="absolute top-3 right-3 z-10 rounded-full border border-white/20 bg-black/60 p-2 text-white shadow-md backdrop-blur-md transition hover:bg-black/90 hover:scale-110 active:scale-95"
                       aria-label={isSaved ? "Unsave signal" : "Save signal"}
                     >
                       {isSaved ? (
-                        <BookmarkCheck className="h-4 w-4 text-[#80913E]" />
+                        <BookmarkCheck className="h-4 w-4 text-[#D3E57A]" />
                       ) : (
-                        <Bookmark className="h-4 w-4 text-gray-500 dark:text-gray-300" />
+                        <Bookmark className="h-4 w-4 text-white/85 hover:text-white" />
                       )}
                     </button>
                   </div>
 
-                  <h3 className="mt-4 text-lg font-bold leading-snug tracking-tight text-[#222129] dark:text-white">
-                    {signal.title}
-                  </h3>
-
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-[#65616B] dark:text-gray-400">
-                    {signal.summary}
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-1.5">
-                    {(signal.tags || []).map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-black/[0.045] px-2.5 py-1 text-[10px] font-medium text-gray-600 dark:bg-white/[0.07] dark:text-gray-300"
-                      >
-                        {tag}
+                  {/* Content Container */}
+                  <div className="flex flex-1 flex-col p-5">
+                    {/* Meta row: Relative time & Clicks */}
+                    <div className="flex items-center justify-between text-xs text-slate-500 dark:text-gray-400">
+                      <span className="flex items-center gap-1.5 font-medium">
+                        <Clock3 className="h-3.5 w-3.5 text-slate-400 dark:text-gray-500" />
+                        {formatRelativeTime(signal.published_at)}
                       </span>
-                    ))}
-                  </div>
-
-                  <div className="mt-5 border-t border-black/5 pt-4 dark:border-white/10">
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="truncate text-xs font-bold text-[#35323B] dark:text-gray-200">
-                          {signal.source_name || "Source not specified"}
-                        </p>
-                        <p className="mt-1 flex items-center gap-1 text-[11px] text-gray-500">
-                          <CalendarDays className="h-3 w-3" />
-                          {formatDate(signal.published_at)}
-                        </p>
-                      </div>
-                      <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-semibold text-amber-800 dark:bg-amber-500/10 dark:text-amber-300">
-                        Curated · verification pending
+                      <span className="flex items-center gap-1.5 font-bold text-indigo-600 dark:text-[#7A8BFF]">
+                        <Eye className="h-3.5 w-3.5" />
+                        {signal.clicks ?? SIGNAL_FALLBACK_CLICKS[signal.id] ?? 240} clicks
                       </span>
                     </div>
 
-                    <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+                    {/* Bold Title (2 lines clamp) */}
+                    <h3 className="mt-2.5 font-bold text-[16px] sm:text-[17px] leading-snug tracking-tight text-[#1E1E22] line-clamp-2 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-[#D3E57A] transition-colors">
+                      {signal.title}
+                    </h3>
+
+                    {/* Summary (2 lines clamp) */}
+                    <p className="mt-2 text-xs sm:text-[13px] leading-relaxed text-[#5E5B63] line-clamp-2 dark:text-gray-400">
+                      {signal.summary}
+                    </p>
+
+                    {/* Topic Pills */}
+                    <div className="mt-3.5 flex flex-wrap gap-1.5">
+                      {signal.category && (
+                        <span className="rounded-md bg-indigo-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-indigo-700 dark:bg-[#252548] dark:text-[#8C9CFF]">
+                          {signal.category}
+                        </span>
+                      )}
+                      {(signal.tags || []).slice(0, 3).map((tag) => (
+                        <span
+                          key={tag}
+                          className="rounded-md bg-indigo-50/80 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wider text-indigo-600 dark:bg-[#1E2038] dark:text-[#7F8FE8]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Bottom Action Footer */}
+                    <div className="mt-auto pt-4 border-t border-black/5 dark:border-white/10 flex flex-wrap items-center justify-between gap-2">
                       <div className="flex items-center gap-3">
                         <Link
                           href={`/pulse?signal_id=${encodeURIComponent(signal.id)}`}
-                          className="inline-flex items-center gap-1.5 text-xs font-bold text-[#565D30] hover:underline dark:text-[#D3E57A]"
+                          className="inline-flex items-center gap-1 text-xs font-bold text-[#565D30] hover:underline dark:text-[#D3E57A]"
                         >
                           <Sparkles className="h-3.5 w-3.5" />
                           Understand with PULSE
@@ -422,14 +512,10 @@ export default function WorldPulsePage() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 text-xs font-semibold text-gray-500 hover:text-[#68743A] dark:text-gray-400 dark:hover:text-[#D3E57A]"
                         >
-                          Visit source
+                          <span className="hidden sm:inline">Visit</span> source
                           <ExternalLink className="h-3 w-3" />
                         </a>
-                      ) : (
-                        <span className="text-xs text-gray-400">
-                          Source link unavailable
-                        </span>
-                      )}
+                      ) : null}
                     </div>
                   </div>
                 </article>

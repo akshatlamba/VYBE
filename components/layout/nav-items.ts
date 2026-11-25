@@ -8,6 +8,7 @@ import {
   Home,
   Globe2,
   CalendarDays,
+  Orbit,
   LucideIcon,
 } from "lucide-react";
 
@@ -22,6 +23,7 @@ export interface NavItem {
 export const STUDENT_NAV: NavItem[] = [
   { id: "home", label: "Home", href: "/", icon: Home },
   { id: "world-pulse", label: "World Pulse", href: "/world-pulse", icon: Globe2 },
+  { id: "world-graph", label: "World Graph", href: "/world-graph", icon: Orbit },
   { id: "calendar", label: "Calendar", href: "/calendar", icon: CalendarDays },
   { id: "radar", label: "Radar", href: "/radar", icon: Compass },
   { id: "pulse", label: "PULSE", href: "/pulse", icon: Sparkles },

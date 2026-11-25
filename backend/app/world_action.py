@@ -22,7 +22,9 @@ CURATED_SIGNALS = [
         "category": "AI",
         "source_status": "sourced",
         "is_sample": False,
-        "difficulty": "beginner"
+        "difficulty": "beginner",
+        "image_url": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
+        "clicks": 420
     },
     {
         "id": "sig-002",
@@ -35,7 +37,9 @@ CURATED_SIGNALS = [
         "category": "Hardware",
         "source_status": "sourced",
         "is_sample": False,
-        "difficulty": "intermediate"
+        "difficulty": "intermediate",
+        "image_url": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop",
+        "clicks": 280
     },
     {
         "id": "sig-003",
@@ -48,7 +52,9 @@ CURATED_SIGNALS = [
         "category": "AI",
         "source_status": "sourced",
         "is_sample": False,
-        "difficulty": "advanced"
+        "difficulty": "advanced",
+        "image_url": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop",
+        "clicks": 615
     },
     {
         "id": "sig-004",
@@ -61,7 +67,9 @@ CURATED_SIGNALS = [
         "category": "Research",
         "source_status": "sourced",
         "is_sample": False,
-        "difficulty": "advanced"
+        "difficulty": "advanced",
+        "image_url": "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800&auto=format&fit=crop",
+        "clicks": 185
     },
     {
         "id": "sig-005",
@@ -74,7 +82,9 @@ CURATED_SIGNALS = [
         "category": "Web Development",
         "source_status": "sourced",
         "is_sample": False,
-        "difficulty": "intermediate"
+        "difficulty": "intermediate",
+        "image_url": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800&auto=format&fit=crop",
+        "clicks": 340
     }
 ]
 

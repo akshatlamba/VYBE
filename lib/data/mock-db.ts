@@ -67,6 +67,9 @@ export interface WorldSignal {
   published_at: string;
   tags: string[];
   is_sample: boolean;
+  category?: string;
+  image_url?: string;
+  clicks?: number;
 }
 
 export interface ApplicationTask {
@@ -212,68 +215,86 @@ export const PERSONAS: Record<string, StudentProfile> = {
 export const INITIAL_SIGNALS: WorldSignal[] = [
   {
     id: "sig-001",
-    title: "AI agents start appearing inside everyday apps",
+    title: "Autonomous Coding Agents Enter Production Workflows",
     summary:
-      "Autonomous multi-step agents are transitioning from research labs into developer tools and enterprise workspaces, creating massive demand for agent-building skill sets.",
-    source_name: "MIT Tech Review",
-    source_url: "https://technologyreview.com/signals/ai-agents",
+      "GitHub Octoverse 2026 data shows 42% of developer pull requests now touch AI agent infrastructure or multi-agent workflows.",
+    source_name: "GitHub Octoverse 2026",
+    source_url: "https://github.blog/octoverse-2026",
     published_at: "2026-11-21T09:00:00Z",
-    tags: ["AI Agents", "Automation", "Python"],
+    tags: ["AI Agents", "Python", "Software Engineering"],
+    category: "AI",
+    image_url: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=800&auto=format&fit=crop",
+    clicks: 420,
     is_sample: true,
   },
   {
     id: "sig-002",
-    title: "Small Language Models run on-device and at the edge",
+    title: "India Semiconductor Mission Expands Student Fabrication Grants",
     summary:
-      "Efficiency breakthroughs allow 1B to 3B parameter models to run directly on consumer laptops and phones with zero cloud latency and strict data privacy.",
-    source_name: "VentureBeat AI",
-    source_url: "https://venturebeat.com/slm-edge-computing",
+      "MeitY and ISM approve ₹450 Cr in subsidized MPW tape-outs and VLSI EDA tool licenses across 80+ engineering colleges.",
+    source_name: "MeitY & ISM Portal",
+    source_url: "https://meity.gov.in/semiconductors/student-grants-2026",
     published_at: "2026-11-18T14:30:00Z",
-    tags: ["SLM", "Edge AI", "Mobile"],
+    tags: ["Hardware", "Semiconductors", "VLSI"],
+    category: "Hardware",
+    image_url: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop",
+    clicks: 280,
     is_sample: true,
   },
   {
     id: "sig-003",
-    title: "Venture funding pivots toward vertical AI agents and workflow automation",
+    title: "Open-Source Small Language Models Reach Edge Devices",
     summary:
-      "Early-stage investors are prioritizing specialized industry agents with measurable ROI over generic consumer chat tools.",
-    source_name: "TechCrunch",
-    source_url: "https://techcrunch.com/vertical-ai-funding",
+      "Sub-3B parameter quantized models achieve mathematical reasoning parity on mobile and single-board hardware without cloud latency.",
+    source_name: "Hugging Face Research",
+    source_url: "https://huggingface.co/blog/edge-slm-benchmarks",
     published_at: "2026-11-16T11:15:00Z",
-    tags: ["Startups", "Venture Capital", "Product"],
+    tags: ["Edge Computing", "Open Source", "PyTorch"],
+    category: "AI",
+    image_url: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=800&auto=format&fit=crop",
+    clicks: 615,
     is_sample: true,
   },
   {
     id: "sig-004",
-    title: "Open-source scientific discovery acceleration through foundational models",
+    title: "National Quantum Mission Approves 14 College Incubators",
     summary:
-      "Global research consortia standardize benchmarks evaluating multi-step reasoning capabilities on biochemical and mathematical synthesis.",
-    source_name: "Nature Machine Intelligence",
-    source_url: "https://nature.com/articles/science-fm-benchmarks",
+      "DST confirms initial quantum communication testbeds and post-quantum cryptography curriculum standards for undergraduate universities.",
+    source_name: "DST National Quantum Mission",
+    source_url: "https://dst.gov.in/nqm-college-initiatives-2026",
     published_at: "2026-11-13T08:45:00Z",
-    tags: ["Research", "PyTorch", "Science"],
+    tags: ["Quantum", "Cryptography", "Research"],
+    category: "Research",
+    image_url: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=800&auto=format&fit=crop",
+    clicks: 185,
     is_sample: true,
   },
   {
     id: "sig-005",
-    title: "Spatial computing and multimodal web experiences expand",
+    title: "WebAssembly Standardizes Component Model for Micro-Agents",
     summary:
-      "WebXR standard adoption makes 3D spatial user interfaces commercially viable in interactive education and simulation engines.",
-    source_name: "Wired",
-    source_url: "https://wired.com/spatial-web-education",
+      "W3C and Bytecode Alliance release final Wasm component specifications enabling sandboxed cross-language micro-agents in browser tabs.",
+    source_name: "W3C Standards Release",
+    source_url: "https://www.w3.org/TR/wasm-component-model",
     published_at: "2026-11-09T16:00:00Z",
-    tags: ["WebXR", "Design", "Front End"],
+    tags: ["WebAssembly", "Web Development", "Systems"],
+    category: "Web Development",
+    image_url: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=800&auto=format&fit=crop",
+    clicks: 340,
     is_sample: true,
   },
   {
     id: "sig-006",
-    title: "Zero-trust cloud infrastructure becomes mandatory in student engineering programs",
+    title: "Zero-Trust Cloud Infrastructure Mandated Across Engineering Labs",
     summary:
       "Security compliance requirements prompt top engineering institutions to evaluate cryptographic identity and least-privilege architecture from day one.",
     source_name: "Cloud Security Alliance",
     source_url: "https://cloudsecurity.org/zero-trust-curriculum",
     published_at: "2026-11-05T10:00:00Z",
     tags: ["Security", "DevOps", "Cloud"],
+    category: "Research",
+    image_url: "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800&auto=format&fit=crop",
+    clicks: 520,
     is_sample: true,
   },
 ];

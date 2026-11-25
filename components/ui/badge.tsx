@@ -1,6 +1,9 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Check, ShieldCheck, Link2, UserCheck, AlertTriangle, X } from "lucide-react";
+import { getSkillMeta, SkillBadge } from "@/components/ui/skill-badge";
+
+export { SkillBadge, getSkillMeta };
 
 export type PriorityLevel = "low" | "medium" | "high";
 export type SourceStatus = "sourced" | "unverified" | "stale";
@@ -139,16 +142,24 @@ interface SkillTagProps {
   label: string;
   onRemove?: () => void;
   className?: string;
+  showIcon?: boolean;
 }
 
-export function SkillTag({ label, onRemove, className }: SkillTagProps) {
+export function SkillTag({ label, onRemove, className, showIcon = true }: SkillTagProps) {
+  const meta = getSkillMeta(label);
+
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-caption font-medium bg-[#D9C9F5]/40 text-[#45366E] border border-[#D9C9F5] dark:bg-[#D9C9F5]/20 dark:text-[#E2D5FC] dark:border-[#D9C9F5]/30",
+        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-caption font-medium bg-[#D9C9F5]/40 text-[#45366E] border border-[#D9C9F5] dark:bg-[#D9C9F5]/20 dark:text-[#E2D5FC] dark:border-[#D9C9F5]/30 shadow-sm",
         className
       )}
     >
+      {showIcon && (
+        <span className={cn("flex items-center justify-center shrink-0 rounded-full p-0.5", meta.iconBg)}>
+          {meta.icon}
+        </span>
+      )}
       <span>{label}</span>
       {onRemove && (
         <button

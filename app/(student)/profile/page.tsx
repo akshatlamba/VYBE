@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Toggle } from "@/components/ui/checkbox";
 import { SkillTag } from "@/components/ui/badge";
+import { SkillsToolsSection } from "@/components/profile/skills-tools-section";
 import { useTheme } from "@/lib/theme/theme-provider";
 import { PERSONAS, StudentProfile } from "@/lib/data/mock-db";
 import { api } from "@/lib/api/client";
@@ -228,6 +229,9 @@ export default function ProfileSettingsPage() {
             />
           </div>
         </Card>
+
+        {/* Skills & Tools (Design, Creative & Tech Suite) */}
+        <SkillsToolsSection />
 
         {/* Privacy & Sharing Controls */}
         <Card className="flex flex-col gap-5">

@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChips } from "@/components/ui/filter-chips";
 import { VerificationBadge, SkillTag } from "@/components/ui/badge";
+import { SkillBadge } from "@/components/ui/skill-badge";
 import { TimelineItem } from "@/components/ui/timeline-item";
 import { Modal } from "@/components/ui/modal";
 import { Input } from "@/components/ui/input";
@@ -207,18 +208,20 @@ export default function GrowthPassportPage() {
         </div>
 
         {/* Cumulative Skills Gained */}
-        <div className="flex flex-col gap-2 pt-2 border-t border-white/10">
-          <span className="text-caption font-bold text-white/60 uppercase tracking-wider">
-            Verified Skills Gained ({allSkillsGained.length})
-          </span>
-          <div className="flex flex-wrap gap-2">
+        <div className="flex flex-col gap-2.5 pt-3 border-t border-white/10">
+          <div className="flex items-center justify-between">
+            <span className="text-caption font-bold text-white/70 uppercase tracking-wider">
+              Verified Skills Gained ({allSkillsGained.length})
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-2 sm:gap-2.5">
             {allSkillsGained.map((skill) => (
-              <span
+              <SkillBadge
                 key={skill}
-                className="px-3 py-1 rounded-full text-caption font-medium bg-[#D9C9F5]/20 text-[#D9C9F5] border border-[#D9C9F5]/30"
-              >
-                {skill}
-              </span>
+                name={skill}
+                size="md"
+                variant="dark-card"
+              />
             ))}
           </div>
         </div>
