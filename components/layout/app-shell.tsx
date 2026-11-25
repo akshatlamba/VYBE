@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { Header } from "./header";
 import { BottomNav } from "./bottom-nav";
 import { IconRail } from "./icon-rail";
@@ -111,12 +112,29 @@ function AppShellContent({ children }: AppShellProps) {
     }, 1200);
   };
 
-  // Skip global layout chrome on standalone auth/onboarding pages
+  // Skip global layout chrome on standalone auth/onboarding/admin pages
   if (pathname.startsWith("/onboarding")) {
     return <main className="min-h-screen w-full bg-[#0D0D12]">{children}</main>;
   }
 
+  if (pathname.startsWith("/admin")) {
+    return (
+      <main className="min-h-screen w-full bg-[#0B0C10] text-white selection:bg-[#F97316] selection:text-white">
+        {children}
+      </main>
+    );
+  }
+
+  if (pathname.startsWith("/landing")) {
+    return (
+      <main className="min-h-screen w-full bg-[#030305] text-white selection:bg-[#7C3AED] selection:text-white">
+        {children}
+      </main>
+    );
+  }
+
   const isAuthPage = pathname === "/login" || pathname === "/register";
+  const isCommunityPage = pathname === "/community";
   if (isAuthPage) {
     return (
       <div className="min-h-screen flex flex-col relative text-[#1E1E22] dark:text-white overflow-x-hidden w-full">
@@ -133,7 +151,12 @@ function AppShellContent({ children }: AppShellProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col relative text-[#1E1E22] dark:text-white overflow-x-hidden w-full">
+    <div
+      className={cn(
+        "flex flex-col relative text-[#1E1E22] dark:text-white overflow-x-hidden w-full",
+        isCommunityPage ? "h-screen max-h-screen overflow-hidden" : "min-h-screen"
+      )}
+    >
       {/* Background Blobs for Liquid Glass */}
       <div className="blob-container" aria-hidden="true">
         <div className="blob blob-peach" />
@@ -148,7 +171,12 @@ function AppShellContent({ children }: AppShellProps) {
       <IconRail items={navItems} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col lg:pl-72 md:pl-28 pb-36 md:pb-32 transition-all w-full">
+      <div
+        className={cn(
+          "flex-1 flex flex-col lg:pl-72 md:pl-28 transition-all w-full",
+          isCommunityPage ? "h-screen max-h-screen overflow-hidden pb-0" : "pb-36 md:pb-32"
+        )}
+      >
         {/* App Header */}
         <Header
           currentRole={role}
@@ -159,19 +187,28 @@ function AppShellContent({ children }: AppShellProps) {
         />
 
         {/* Page Container */}
-        <main className="w-full max-w-[1440px] mx-auto px-3 sm:px-6 xl:px-8 py-2 flex-1">
+        <main
+          className={cn(
+            "w-full max-w-[1440px] mx-auto px-3 sm:px-6 xl:px-8 flex-1",
+            isCommunityPage
+              ? "overflow-hidden flex flex-col min-h-0 pt-0 pb-2"
+              : "py-2"
+          )}
+        >
           {children}
         </main>
       </div>
 
       {/* Mobile Floating Bottom Navigation (<768px) */}
-      <BottomNav items={navItems} />
+      {!isCommunityPage && <BottomNav items={navItems} />}
 
       {/* Floating PULSE Chatbot Trigger */}
-      <FloatingPulseButton
-        isOpen={quickPulseOpen}
-        onToggle={() => setQuickPulseOpen((prev) => !prev)}
-      />
+      {!isCommunityPage && (
+        <FloatingPulseButton
+          isOpen={quickPulseOpen}
+          onToggle={() => setQuickPulseOpen((prev) => !prev)}
+        />
+      )}
 
       {/* PULSE Quick Chat Side Panel */}
       <QuickChatPanel

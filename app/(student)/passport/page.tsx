@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { useAuth } from "@/lib/auth/auth-context";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { FilterChips } from "@/components/ui/filter-chips";
@@ -33,7 +34,20 @@ export default function GrowthPassportPage() {
   const [newSkills, setNewSkills] = useState("");
   const [newEvidenceUrl, setNewEvidenceUrl] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = useAuth();
   const student = PERSONAS.beginner;
+
+  const studentName = user?.name || student.name || "Student";
+  const studentDepartment = user?.department || student.department;
+  const studentAcademicYear = user?.academic_year || student.academic_year;
+  const studentInstitution = student.institution_name || "SRM University Delhi-NCR, Sonepat";
+  const initials = studentName
+    .split(" ")
+    .filter(Boolean)
+    .map((n) => n[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   React.useEffect(() => {
     async function loadOutcomes() {
@@ -141,7 +155,8 @@ export default function GrowthPassportPage() {
             onClick={() => {
               if (navigator.share) {
                 navigator.share({
-                  title: `${student.name}'s Growth Passport`,
+                  title: `${studentName}'s Growth Passport`,
+                  text: `Check out ${studentName}'s verified growth passport on VYBE.`,
                   url: window.location.href,
                 }).catch(() => {});
               } else {
@@ -160,16 +175,24 @@ export default function GrowthPassportPage() {
       {/* Dark Summary Card: Records by Evidence State & Skills Gained */}
       <div className="dark-feature-card p-6 sm:p-8 bg-[#26262B] text-white rounded-[28px] relative overflow-hidden flex flex-col gap-6">
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-[#D3E57A] text-[#1E1E22] font-black text-h3 flex items-center justify-center">
-              GP
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-12 h-12 rounded-full bg-[#D3E57A] text-[#1E1E22] font-black text-h3 flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+              {user?.avatar_url ? (
+                <img
+                  src={user.avatar_url}
+                  alt={studentName}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                initials
+              )}
             </div>
-            <div className="flex flex-col">
-              <span className="text-h3 font-bold text-white tracking-tight">
-                {student.name}
+            <div className="flex flex-col min-w-0">
+              <span className="text-h3 font-bold text-white tracking-tight truncate">
+                {studentName}
               </span>
-              <span className="text-caption text-white/60">
-                {student.department} · {student.academic_year} · {student.institution_name}
+              <span className="text-caption text-white/60 truncate">
+                {studentDepartment} · {studentAcademicYear} · {studentInstitution}
               </span>
             </div>
           </div>

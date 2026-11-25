@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { useAuth } from "@/lib/auth/auth-context";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,15 @@ export default function OpportunityRadarPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedDate, setSelectedDate] = useState("2026-11-25");
   const [compareList, setCompareList] = useState<string[]>([]);
-  const student = PERSONAS.beginner;
+  const { user } = useAuth();
+  const student = useMemo(() => {
+    return {
+      ...PERSONAS.beginner,
+      name: user?.name || PERSONAS.beginner.name,
+      department: user?.department || PERSONAS.beginner.department,
+      academic_year: user?.academic_year || PERSONAS.beginner.academic_year,
+    };
+  }, [user?.name, user?.department, user?.academic_year]);
 
   // Deadline strip days
   const deadlineDays = [
@@ -148,20 +157,35 @@ export default function OpportunityRadarPage() {
       </div>
 
       {/* Deadline Strip */}
-      <div className="p-4 rounded-[28px] glass-surface">
-        <div className="flex items-center justify-between mb-2 px-1">
-          <span className="text-caption font-bold text-[#6B7280] dark:text-gray-400 uppercase tracking-wider">
-            Upcoming Deadlines This Week
-          </span>
-          <span className="text-caption text-gray-400">
-            Selected: {selectedDate}
+      <div className="p-4 sm:p-5 rounded-[28px] glass-surface flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col gap-2 min-w-0">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-caption font-bold text-[#6B7280] dark:text-gray-400 uppercase tracking-wider">
+              Upcoming Deadlines This Week
+            </span>
+            <span className="text-caption text-gray-400 md:hidden">
+              Selected: {selectedDate}
+            </span>
+          </div>
+          <DeadlineStrip
+            days={deadlineDays}
+            selectedDate={selectedDate}
+            onSelectDate={setSelectedDate}
+          />
+        </div>
+
+        {/* Selected Date Context & Quick Jump */}
+        <div className="hidden md:flex flex-col items-end gap-1.5 pl-6 border-l border-black/5 dark:border-white/10 shrink-0">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-caption font-bold text-[#1E1E22] dark:text-white">
+              Selected: {new Date(selectedDate).toLocaleDateString("en-US", { month: "short", day: "numeric", weekday: "short" })}
+            </span>
+          </div>
+          <span className="text-[11px] text-[#6B7280] dark:text-gray-400">
+            {filtered.length} matching opportunities available
           </span>
         </div>
-        <DeadlineStrip
-          days={deadlineDays}
-          selectedDate={selectedDate}
-          onSelectDate={setSelectedDate}
-        />
       </div>
 
       {/* Opportunity Cards List */}

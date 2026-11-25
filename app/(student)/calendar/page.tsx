@@ -448,7 +448,7 @@ export default function CalendarPage() {
           </div>
         </div>
 
-        {/* Right: Actions & Student Profile Badge */}
+        {/* Right: Actions */}
         <div className="flex items-center gap-3 sm:gap-4 ml-auto">
           {/* Quick Refresh & iCal Export */}
           <button
@@ -463,29 +463,11 @@ export default function CalendarPage() {
             href={`${API}/events/calendar/${studentId}/export.ics`}
             download="vybe-schedule.ics"
             title="Export iCalendar (.ics)"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full glass-pill text-xs font-bold text-[#1E1E22] dark:text-[#D3E57A] hover:bg-black/5 dark:hover:bg-white/10 transition-all"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full glass-pill text-xs font-bold text-[#1E1E22] dark:text-[#D3E57A] hover:bg-black/5 dark:hover:bg-white/10 transition-all shadow-xs"
           >
             <Download className="w-3.5 h-3.5" />
             <span>Export .ics</span>
           </a>
-
-          <div className="h-7 w-px bg-black/10 dark:bg-white/10 hidden sm:block" />
-
-          {/* Student Profile Pill */}
-          <div className="flex items-center gap-2.5 pl-2 pr-3 py-1 rounded-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10">
-            <div className="relative">
-              <img
-                src={user.avatar_url || "/avatars/avatar-1.svg"}
-                alt={user.name}
-                className="w-8 h-8 rounded-full object-cover ring-2 ring-[#D3E57A]"
-              />
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-white dark:ring-[#0D0D12]" />
-            </div>
-            <div className="hidden sm:flex flex-col text-left">
-              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">Hello,</span>
-              <span className="text-xs font-bold text-[#1E1E22] dark:text-white -mt-0.5">{user.name.split(" ")[0]}</span>
-            </div>
-          </div>
         </div>
       </header>
 
@@ -494,9 +476,9 @@ export default function CalendarPage() {
           ========================================================================= */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start w-full">
         {/* =========================================================================
-            SECTION A: LEFT CONTROL & AGENDA COLUMN (col-span-12 lg:col-span-4 xl:col-span-3)
+            SECTION A: LEFT CONTROL & AGENDA COLUMN (col-span-12 lg:col-span-5 xl:col-span-4)
             ========================================================================= */}
-        <aside className="col-span-12 lg:col-span-4 xl:col-span-3 flex flex-col gap-5">
+        <aside className="col-span-12 lg:col-span-5 xl:col-span-4 flex flex-col gap-5">
           <div className="w-full flex gap-3 sm:gap-4">
             {/* Far-Left Vertical Rail */}
             <div className="glass-card rounded-3xl p-2.5 flex flex-col items-center justify-between gap-6 py-4 shadow-lg shrink-0">
@@ -642,7 +624,7 @@ export default function CalendarPage() {
                         key={`${d.key}-${idx}`}
                         type="button"
                         onClick={() => setSelectedDate(d.key)}
-                        className={`py-1 rounded-lg text-xs font-semibold transition-all ${
+                        className={`h-7 w-7 mx-auto rounded-lg text-xs font-semibold flex items-center justify-center transition-all ${
                           !d.isCurrentMonth ? "text-slate-400 dark:text-slate-600" : ""
                         } ${
                           isSelected
@@ -793,9 +775,9 @@ export default function CalendarPage() {
         </aside>
 
         {/* =========================================================================
-            SECTION B: RIGHT MAIN TIMETABLE & WEEK SCHEDULE BOARD (col-span-12 lg:col-span-8 xl:col-span-9)
+            SECTION B: RIGHT MAIN TIMETABLE & WEEK SCHEDULE BOARD (col-span-12 lg:col-span-7 xl:col-span-8)
             ========================================================================= */}
-        <section className="col-span-12 lg:col-span-8 xl:col-span-9 glass-card rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col gap-5 min-h-[750px]">
+        <section className="col-span-12 lg:col-span-7 xl:col-span-8 glass-card rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col gap-5 min-h-[750px]">
           {/* Top Control Strip */}
           <div className="flex flex-wrap items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-white/10">
             {/* Left: Month, Year, Today & Chevrons */}

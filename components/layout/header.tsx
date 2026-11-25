@@ -88,7 +88,7 @@ export function Header({
   const ThemeIcon = theme === "dark" ? Moon : theme === "light" ? Sun : Laptop;
 
   return (
-    <header className="w-full max-w-[1200px] mx-auto flex items-center justify-between py-3 sm:py-4 px-3 sm:px-8 xl:px-10 z-20 gap-2">
+    <header className="w-full max-w-[1440px] mx-auto flex items-center justify-between py-3.5 sm:py-4 px-3 sm:px-6 xl:px-8 z-20 gap-2">
       {/* Left: Avatar + Greeting */}
       <Link href="/profile" className="flex items-center gap-2 sm:gap-3 group outline-none min-w-0 shrink">
         <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-full ring-2 ring-white/80 dark:ring-white/20 bg-gradient-to-tr from-[#FAD8C6] via-[#F6C9DD] to-[#D9C9F5] flex items-center justify-center font-bold text-caption sm:text-body text-[#1E1E22] shadow-sm shrink-0 overflow-hidden">
@@ -97,9 +97,11 @@ export function Header({
           ) : (
             (user.name || userName)
               .split(" ")
+              .filter(Boolean)
               .map((n) => n[0])
               .join("")
               .slice(0, 2)
+              .toUpperCase()
           )}
         </div>
         <div className="flex flex-col text-left truncate min-w-0">
@@ -142,7 +144,7 @@ export function Header({
           </LiquidGlassHero>
 
           {showRoleMenu && (
-            <div className="absolute right-0 mt-2 w-44 rounded-2xl liquid-glass bg-white/95 dark:bg-[#1E1E24]/95 p-1.5 shadow-xl border border-white/60 dark:border-white/10 z-50 animate-in fade-in zoom-in-95 duration-150">
+            <div className="absolute right-0 top-full mt-2 w-52 rounded-2xl glass-surface bg-white/95 dark:bg-[#1E1E24]/95 p-1.5 shadow-2xl border border-black/10 dark:border-white/10 z-50 animate-in fade-in zoom-in-95 duration-150">
               <div className="text-[10px] font-bold text-gray-400 px-3 py-1 uppercase tracking-wider">
                 Switch Perspective
               </div>

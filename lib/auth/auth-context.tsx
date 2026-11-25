@@ -78,11 +78,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         ? "/avatars/avatar-3.svg"
         : "/avatars/avatar-1.svg";
 
+    const formattedName =
+      name?.trim() ||
+      email
+        .split("@")[0]
+        .split(/[._-]/)
+        .filter(Boolean)
+        .map((s) => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase())
+        .join(" ") ||
+      "Student";
+
     const newUser: UserSession = {
       ...DEFAULT_USER,
       id: studentId || (email.toLowerCase().includes("riya") ? 2 : 1),
       email,
-      name: name || email.split("@")[0].replace(".", " "),
+      name: formattedName,
       avatar_url: avatar,
     };
     setUser(newUser);
