@@ -1,146 +1,390 @@
-# VYBE: Student Opportunity & Growth Platform
+# VYBE — Student Opportunity & Growth Platform
 
-> **"Your World. Your Guide. Your Growth."**  
-> *Built for Prasunex Innovathon 2026 by Team CODE STORM (Piyush, Aashi, Akshat, Anugrah, Ashutosh).*
+> **Your World. Your Guide. Your Growth.**
+>
+> Built for **PRASUNEX Innovathon 2026** by **Team CODE STORM**.
 
-VYBE is a full-stack student opportunity and decision-intelligence platform built as an installable Progressive Web App (PWA). Rather than acting as another passive listings directory or open-ended chatbot, VYBE connects real-world opportunities to structured preparation and verified student growth.
+VYBE is a student opportunity discovery and growth platform designed to connect what is happening in the world with what an individual student can learn, build, and pursue.
 
----
+Instead of functioning only as an opportunity listing website, VYBE brings together student profiles, relevant signals, personalized guidance, action planning, event tracking, and a Growth Passport in one connected experience.
 
-## 🌟 The Core Loop & Student Journey
+## The VYBE Journey
 
+```text
+        WORLD PULSE
+             |
+             v
+       PERSONAL RELEVANCE
+             |
+             v
+          PULSE AI
+       Guidance & Ideas
+             |
+             v
+        TAKE ACTION
+    Projects / Events / Goals
+             |
+             v
+       GROWTH PASSPORT
+    Progress / Milestones / Evidence
+             |
+             +--------> Better-informed next steps
 ```
-World Pulse  ───>  PULSE (Guide)  ───>  Action Plan  ───>  Growth Passport
-    ▲                                                             │
-    └────────────────── Progress Feeds Next Signal ───────────────┘
+
+**The idea:** Help students move from discovering an opportunity to taking meaningful action and recording their progress.
+
+## Core Features
+
+### 1. World Pulse
+A discovery experience for exploring trends, signals, and areas of interest that may matter to students.
+
+### 2. PULSE AI
+An AI-assisted student guidance experience that uses student context to provide relevant explanations and suggested actions. The backend supports Google Gemini, with deterministic fallback guidance when live AI is unavailable.
+
+### 3. Personalized Recommendations
+A recommendation engine that compares student interests, goals, skills, and skill level with available trend and opportunity data. It produces match scores and explanations for recommendations.
+
+### 4. World-to-Action
+A workflow intended to help students turn relevant discoveries into practical next steps.
+
+### 5. Growth Passport
+A place to organize student projects, milestones, progress, and supporting evidence.
+
+### 6. Events and Calendar
+Backend functionality for event records, student watchlists, calendar entries, and reminder scheduling.
+
+### 7. Community and Notifications
+Dedicated backend modules for community-related functionality and student notifications.
+
+### 8. World Graph and Interactive Experience
+An interactive visual experience designed to help students explore connections between signals, interests, and opportunities. See the live application for the currently available experience.
+
+> **Prototype data notice:** Some trend and opportunity examples are curated sample data used for demonstration and development. They should not be interpreted as continuously updated live listings.
+
+## Technology Stack
+
+| Layer | Technologies |
+|---|---|
+| Frontend framework | Next.js 14 |
+| UI library | React 18 |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Interactive 3D | Three.js |
+| Animation | Motion |
+| Frontend validation | Zod |
+| Icons | Lucide React |
+| Frontend API integration | Next.js API routes and centralized API client |
+| Backend framework | Python, FastAPI |
+| Backend validation | Pydantic |
+| ORM | SQLAlchemy |
+| Database support | SQLite and PostgreSQL |
+| PostgreSQL driver | Psycopg 3 |
+| AI integration | Google GenAI SDK (Gemini) |
+| Testing | Vitest and Playwright |
+| Authentication integration | Supabase-related frontend/backend integration |
+
+## System Architecture
+
+VYBE uses a separate frontend and Python backend.
+
+```text
+                 STUDENT
+                    |
+                    v
+       NEXT.JS FRONTEND (React)
+                    |
+                    v
+          NEXT.JS API ROUTES
+                    |
+                    v
+         CENTRAL API CLIENT
+                    |
+                    v
+           FASTAPI BACKEND
+             /          \
+            v            v
+      SQLAlchemy      AI SERVICE
+            |            |
+            v            v
+       DATABASE       GEMINI
+            |
+            v
+     STUDENT DATA,
+     PROJECTS, EVENTS,
+     MILESTONES AND MORE
 ```
 
-1. **Profile**: 4-step onboarding captures goals, verified skills, academic year, department, budget ceiling, and availability.
-2. **Discover (Opportunity Radar)**: Curated opportunities scored with deterministic matching and transparent reason breakdowns.
-3. **Check Eligibility**: Hard filters strictly exclude opportunities the student cannot apply for (deadline, department, year, budget).
-4. **Identify Skill Gaps**: Missing prerequisite competencies are made visible as lilac chips.
-5. **Prepare & Track**: Personalized action plan with checklist timelines, Kanban board, and deadlines.
-6. **Apply & Record**: Verifiable Opportunity Receipt with QR code; outcomes captured in the portable Growth Passport.
+### Frontend
 
----
+The Next.js application handles the user interface, navigation, interactive components, and communication with backend services.
 
-## 🎨 Visual Design System (From Design Reference)
+Important frontend directories include:
 
-Adapted directly from the provided design reference:
-- **Pastel Mesh Background**: Peach (`#FAD8C6`), pink (`#F6C9DD`), lavender (`#D9C9F5`) cascading into clean off-white (`#F8F7FB`).
-- **Glass Surfaces**: Translucent white surfaces (~65% opacity), 20px backdrop blur, `1px` subtle top highlight border, soft depth shadow, and `28px` rounded corners (`rounded-[28px]`).
-- **Signature Dark Feature Card**: Charcoal `#26262B` surface featuring a bright lime `#D3E57A` progress ring on a translucent track, vertical divider, and 3 icon stats.
-- **Controls & Filters**:
-  - Primary button: Solid black/charcoal pill (`rounded-full bg-[#1E1E22] text-white`).
-  - Active filter pill: Solid black pill with white text.
-  - Status tabs: Lime `#D3E57A` background with white count circle when active; white with grey count circle when inactive.
-  - Date & deadline strip: Tall rounded pill columns (weekday over circular date badge), selected = solid black.
-- **Responsive Navigation**:
-  - **Mobile (<768px)**: Floating glass bottom bar with active black pill.
-  - **Tablet (768px - 1023px)**: Glass icon rail.
-  - **Desktop (>=1024px)**: Glass sidebar with matching active pill styling.
-  - **Universal Shell**: Shared across Student, Institution Staff, and Admin views with one-click perspective switching.
-- **Living Showcase**: Visit `/design-system` to explore every token, component, and state in both Light and Dark themes.
+- `app/` — application pages and route handlers.
+- `components/` — reusable UI components.
+- `lib/api/` — centralized API communication.
+- `lib/` — shared frontend utilities and application logic.
+- `public/` — static assets.
 
----
+### Backend
 
-## 🧠 Deterministic Recommendation Engine (No Hallucinations)
+The Python backend uses FastAPI to expose application APIs and SQLAlchemy to interact with database models.
 
-Matching logic is 100% deterministic and unit-tested:
+Important backend modules include:
 
-1. **Hard Eligibility**:
-   - Application deadline active?
-   - Student academic year in permitted cohort?
-   - Student department permitted?
-   - Cost $\le$ student budget ceiling?
-   - *Ineligible opportunities are strictly excluded from recommendations.*
-2. **Weighted Fit with Visible Reasons** (`lib/intelligence/weights.config.ts`):
-   - **Interests Match**: 30%
-   - **Career Goals Alignment**: 25%
-   - **Budget Feasibility**: 15%
-   - **Schedule Feasibility**: 15%
-   - **Format Match (Online/Hybrid/Onsite)**: 10%
-   - **Level Fit**: 5%
-3. **Readiness Analysis (Separated from Eligibility)**:
-   - Prerequisites verified vs missing skills to strengthen.
-   - Preparation checklist completion ratio (e.g. *"Readiness: 3 of 4 preparation items complete"*).
-   - Time remaining until submission deadline.
+- `backend/app/main.py` — FastAPI application and route registration.
+- `backend/app/database/` — database connection and ORM models.
+- `backend/app/students.py` — student-related functionality.
+- `backend/app/pulse.py` — PULSE guidance endpoint and AI/fallback logic.
+- `backend/app/recommendations.py` — deterministic recommendation logic.
+- `backend/app/events.py` — event functionality.
+- `backend/app/calendar.py` — calendar functionality.
+- `backend/app/community.py` — community functionality.
+- `backend/app/notifications.py` — notification functionality.
+- `backend/app/growth_passport.py` — Growth Passport functionality.
+- `backend/app/world_action.py` — World-to-Action functionality.
 
----
+## Backend API Groups
 
-## 🤖 Safe AI Boundaries & Pluggable Provider
+The FastAPI application registers the following route groups:
 
-- **Zero-Key Out-of-the-Box**: Runs instantly with a zero-dependency Mock AI Provider.
-- **Persona Context Awareness**: The same global trend produces 3 tailored roadmaps:
-  - *Beginner wanting an internship*: Learn Python async, build 1 small agent bot, join SIH team.
-  - *Business-minded wanting a startup*: Validate vertical agent economics, map problem canvas, pitch to Antler.
-  - *Advanced wanting research*: Reproduce edge SLM benchmarks, optimize PyTorch kernel, target IISc SRIP.
-- **Strict Guardrails**: AI never touches eligibility checks, rankings, or status changes. All AI endpoints are rate-limited.
+| API group | Responsibility |
+|---|---|
+| `/students` | Student profile functionality |
+| `/pulse` | PULSE guidance |
+| `/world-to-action` | Discovery-to-action workflows |
+| `/growth-passport` | Projects, milestones, and evidence |
+| `/events` | Events and watchlists |
+| `/calendar` | Calendar functionality |
+| `/community` | Community functionality |
+| `/notifications` | Notification functionality |
 
----
+The application also exposes root and health-check routes.
 
-## 🛡️ Trust, Verification & Privacy Architecture
+For the exact endpoint paths, request formats, and response models, refer to the backend route modules and the FastAPI API documentation when the server is running.
 
-- **Opportunity Radar**: Every opportunity is explicitly marked `Sourced` (with official link and last-checked timestamp) or `Unverified`. Stale listings are automatically flagged.
-- **Growth Passport**: Three honest evidence tiers (never labels unverified records as verified):
-  - `Self-reported`: Student reflections and self-logged progress.
-  - `Link-supported`: Public repository, demo URL, or publication attachment.
-  - `Verified`: Organizer or institutional certification with cryptographic verification hash.
-- **Institution Privacy**: Staff analytics strictly suppress any filtered cohort smaller than **5 students** to protect student anonymity. No individual student identities are ever exposed to staff.
-- **Demoware Honesty**: All prototype seed data clearly displays the `Sample Prototype Data` badge.
+## AI and Recommendation Approach
 
----
+### PULSE AI
 
-## 🚀 Setup & Execution
+PULSE is designed to provide student-oriented guidance using contextual information such as interests, goals, academic background, and skill level.
+
+The backend supports:
+
+- Google Gemini integration through the Google GenAI SDK.
+- Configurable model selection using `GEMINI_MODEL`.
+- A default model configuration of `gemini-2.5-flash`.
+- Deterministic fallback guidance when Gemini is unavailable or not configured.
+- Structured responses containing guidance, explanations, and suggested actions.
+
+AI-generated guidance and deterministic fallback responses are distinct execution paths. The application should not represent fallback output as a live Gemini response.
+
+### Recommendation Engine
+
+The backend recommendation logic uses deterministic matching rather than relying on an AI model to decide recommendation scores.
+
+The inspected implementation considers:
+
+- Student interests.
+- Student goals and career goals.
+- Existing skills.
+- Student skill level.
+- Opportunity or trend category.
+- Related or required skills.
+- Beginner-level suitability.
+
+The matching function produces a score capped at 100 and includes reasons explaining the match.
+
+The current sample recommendation data is maintained in the backend sample-data module. Recommendation results should therefore be understood in the context of the data available to the application.
+
+## Database
+
+The Python backend uses SQLAlchemy ORM models.
+
+The inspected database models include:
+
+- `Student`
+- `StudentProfile`
+- `Project`
+- `Milestone`
+- `ProjectEvidence`
+- `Event`
+- `EventWatchlist`
+- `Reminder`
+
+### Database configuration
+
+The backend supports:
+
+- Local SQLite for development when `DATABASE_URL` is not provided.
+- PostgreSQL through Psycopg 3 when a PostgreSQL connection string is configured.
+
+The repository also contains a Supabase SQL migration with PostgreSQL schema and Row Level Security-related definitions. The migration files and the active backend database connection are separate configuration concerns; deployment configuration determines which database is actually used.
+
+## Local Development Setup
 
 ### Prerequisites
-- Node.js 18+ (tested on Node v24)
-- npm 9+
 
-### 1. Installation
+- Node.js and npm.
+- Python.
+- Git.
+
+### 1. Clone the repository
+
 ```bash
-git clone <repo-url>
-cd VYBEE
+git clone https://github.com/akshatlamba/VYBE.git
+cd VYBE
+```
+
+### 2. Install frontend dependencies
+
+```bash
 npm install
 ```
 
-### 2. Environment Configuration
-```bash
-cp .env.example .env.local
-```
-*(Supabase credentials and AI API keys are optional. The app falls back to the in-memory repository and mock intelligence provider automatically).*
+### 3. Configure the backend
 
-### 3. Running Locally
+Create a Python virtual environment:
+
+**Windows PowerShell**
+
+```powershell
+cd backend
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+**macOS / Linux**
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+### 4. Configure environment variables
+
+Create a `backend/.env` file for backend configuration when needed.
+
+Relevant backend configuration variables include:
+
+| Variable | Purpose |
+|---|---|
+| `DATABASE_URL` | Optional database connection string; SQLite is used by default |
+| `GEMINI_API_KEY` | API key for Google Gemini integration |
+| `GEMINI_MODEL` | Optional Gemini model selection |
+| `SUPABASE_JWT_SECRET` | Supabase-related authentication configuration |
+| `DEV_STUDENT_ID` | Optional development student fallback |
+
+Never commit `.env` files, API keys, database credentials, or other secrets to GitHub.
+
+The exact configuration required depends on which services are being used. The application has a deterministic PULSE fallback when Gemini is not configured.
+
+### 5. Start the backend
+
+From the repository root, with the backend virtual environment activated:
+
+```powershell
+uvicorn app.main:app --reload --app-dir backend
+```
+
+The backend should be available at:
+
+```text
+http://127.0.0.1:8000
+```
+
+FastAPI interactive API documentation:
+
+```text
+http://127.0.0.1:8000/docs
+```
+
+### 6. Start the frontend
+
+Open a second terminal at the repository root:
+
 ```bash
 npm run dev
 ```
-Open `http://localhost:3000` (or `http://localhost:3001` if port 3000 is occupied).
 
-### 4. Running Unit Tests (Vitest)
+Open:
+
+```text
+http://localhost:3000
+```
+
+If port 3000 is occupied, Next.js may use another available port. Use the URL printed in the terminal.
+
+## Testing
+
+The repository includes frontend and backend testing tools.
+
+### Frontend unit tests
+
 ```bash
 npm test
 ```
-Runs the 9 deterministic unit tests for Eligibility, Weighted Fit, and Readiness.
 
-### 5. Running End-to-End User Journey (Playwright)
+Run tests in watch mode:
+
+```bash
+npm run test:watch
+```
+
+### End-to-end tests
+
 ```bash
 npm run test:e2e
 ```
-Executes the complete journey from 4-step onboarding → Opportunity Radar → Opportunity Receipt → Tracker → Logging Outcome → Growth Passport.
+
+This uses Playwright.
+
+### Production build
+
+```bash
+npm run build
+```
+
+These are the available test commands. Test results should be reported from the latest run rather than assumed from the existence of test configuration files.
+
+## Prototype Scope and Current Limitations
+
+VYBE is a working prototype under development. The following distinctions are important:
+
+- Some trend and opportunity content is sample or curated demonstration data.
+- Recommendation quality depends on the completeness and accuracy of the available student profile and opportunity data.
+- PULSE can use deterministic fallback guidance when live Gemini integration is unavailable.
+- Reminder scheduling and notification delivery are separate capabilities; creating a pending reminder does not by itself mean a notification has been delivered.
+- Supabase-related authentication code is present, but the current backend JWT handling requires stronger signature verification before it can be considered production-grade authentication.
+- Production deployment requires environment-specific database, security, authentication, and service configuration.
+
+## Future Development
+
+Planned areas for continued development include:
+
+- More reliable and regularly refreshed opportunity and signal sources.
+- Stronger authentication and authorization.
+- More complete integration between student actions, calendar events, and reminders.
+- Improved recommendation quality using richer and verified opportunity data.
+- More robust evidence verification in the Growth Passport.
+- Better deployment monitoring, testing, and performance.
+- Further development of the interactive World Graph experience.
+
+## Team Code Storm
+
+Built for PRASUNEX Innovathon 2026.
+
+| Team member | Contribution |
+|---|---|
+| Ashutosh Singh | UI/UX Design and Architecture |
+| Piyush | Backend Development and Technical Pitch |
+| Aashi | Frontend Development and Pitch |
+| Akshat | Frontend Development |
+| Anugrah | Database Development |
 
 ---
 
-## 🗄️ Database Migrations & Seeds
-
-- **SQL Schema with RLS**: `supabase/migrations/001_initial_schema.sql`
-- **Seed Data (14 Opportunities, 6 Signals, 3 Personas)**: `supabase/seed.sql`
-
----
-
-## 👥 Prasunex Innovathon Round 3 — Team Code Storm
-
-- **Ashutosh Singh** — UI/UX Design & Architecture
-- **Piyush** — Backend Developer & Technical Pitch
-- **Aashi** — Frontend Developer & Pitch
-- **Akshat** — Frontend Developer
-- **Anugrah** — Database Developer
+**VYBE — Discover what matters. Understand what fits. Take action. Track your growth.**
