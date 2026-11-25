@@ -33,9 +33,9 @@ export default function ProfileSettingsPage() {
   const { theme, setTheme } = useTheme();
   const [profile, setProfile] = useState<StudentProfile>(PERSONAS.beginner);
 
-  const [name, setName] = useState(profile.name);
-  const [academicYear, setAcademicYear] = useState(profile.academic_year);
-  const [department, setDepartment] = useState(profile.department);
+  const [name, setName] = useState(user?.name || profile.name);
+  const [academicYear, setAcademicYear] = useState(user?.academic_year || profile.academic_year);
+  const [department, setDepartment] = useState(user?.department || profile.department);
   const [budgetMax, setBudgetMax] = useState<number | string>(profile.budget_max);
   const [availability, setAvailability] = useState(profile.availability);
   const [publicPassport, setPublicPassport] = useState(profile.sharing_prefs.public_passport);
@@ -44,32 +44,56 @@ export default function ProfileSettingsPage() {
   const [savedSuccess, setSavedSuccess] = useState(false);
 
   React.useEffect(() => {
+    if (user?.name) setName(user.name);
+    if (user?.academic_year) setAcademicYear(user.academic_year);
+    if (user?.department) setDepartment(user.department);
+  }, [user]);
+
+  React.useEffect(() => {
     async function loadProfile() {
-      const res = await api.students.getProfile(1);
+      const res = await api.students.getProfile(user?.id || 1);
       if (res.success && res.data) {
-        if (res.data.name) setName(res.data.name);
-        if (res.data.academic_year) setAcademicYear(res.data.academic_year);
-        if (res.data.department) setDepartment(res.data.department);
+        if (!user?.name && res.data.name) setName(res.data.name);
+        if (!user?.academic_year && res.data.academic_year) setAcademicYear(res.data.academic_year);
+        if (!user?.department && res.data.department) setDepartment(res.data.department);
         if (res.data.budget_max !== undefined) setBudgetMax(res.data.budget_max);
         if (res.data.availability) setAvailability(res.data.availability);
-        setProfile((prev) => ({ ...prev, ...res.data }));
+        setProfile((prev) => ({
+          ...prev,
+          ...res.data,
+          name: user?.name || res.data.name || prev.name,
+          email: user?.email || res.data.email || prev.email,
+        }));
       }
     }
     loadProfile();
-  }, []);
+  }, [user?.id, user?.name, user?.email]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     const parsedBudget = budgetMax === "" ? 0 : Math.max(0, Number(budgetMax) || 0);
     try {
-      await api.students.updateProfile(1, {
+      await api.students.updateProfile(user?.id || 1, {
         name,
         academic_year: academicYear,
         department,
         budget_max: parsedBudget,
         availability,
       });
+      updateUser({
+        name,
+        academic_year: academicYear,
+        department,
+      });
+      setProfile((prev) => ({
+        ...prev,
+        name,
+        academic_year: academicYear,
+        department,
+        budget_max: parsedBudget,
+        availability,
+      }));
       setSavedSuccess(true);
       setTimeout(() => setSavedSuccess(false), 2500);
     } finally {
@@ -78,7 +102,7 @@ export default function ProfileSettingsPage() {
   };
 
   return (
-    <div className="flex flex-col gap-8 py-2 max-w-3xl mx-auto">
+    <div className="flex flex-col gap-8 py-2 max-w-4xl mx-auto w-full">
       <div>
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D3E57A]/30 text-[#1E1E22] dark:text-[#D3E57A] text-caption font-bold mb-2">
           <Settings className="w-3.5 h-3.5" />
@@ -96,30 +120,36 @@ export default function ProfileSettingsPage() {
         {/* Profile Card */}
         <Card className="flex flex-col gap-5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-black/5 dark:border-white/5 pb-5">
-            <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-3.5 min-w-0 flex-1">
               <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-[#FAD8C6] via-[#F6C9DD] to-[#D9C9F5] ring-2 ring-white/80 dark:ring-white/20 flex items-center justify-center font-bold text-h2 text-[#1E1E22] overflow-hidden shadow-sm shrink-0">
                 {user.avatar_url ? (
                   <img src={user.avatar_url} alt={name} className="w-full h-full object-cover" />
                 ) : (
-                  name.split(" ").map((n) => n[0]).join("").slice(0, 2)
+                  name
+                    .split(" ")
+                    .filter(Boolean)
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase()
                 )}
               </div>
-              <div>
+              <div className="min-w-0 flex-1">
                 <h3 className="text-xl font-extrabold text-[#1E1E22] dark:text-white tracking-tight">
                   {name}
                 </h3>
                 <span className="text-caption font-medium text-gray-500 dark:text-gray-400">
-                  {profile.institution_name} · Student ID: SRMU-2026-918
+                  {profile.institution_name} · Student ID: SRMU-2026-{user?.id ? String(user.id).padStart(3, "0") : "918"}
                 </span>
               </div>
             </div>
 
             {/* Demo Avatar Switcher */}
-            <div className="flex flex-col gap-1.5 sm:items-end">
+            <div className="flex flex-col gap-1.5 sm:items-end shrink-0">
               <span className="text-[11px] font-bold uppercase tracking-wider text-gray-400">
                 Choose Demo Avatar
               </span>
-              <div className="flex items-center gap-2 flex-wrap">
+              <div className="flex items-center gap-2 flex-nowrap overflow-x-auto py-1">
                 {DEMO_AVATARS.map((av) => {
                   const isSelected = (user.avatar_url || "/avatars/avatar-1.svg") === av.src;
                   return (
@@ -156,7 +186,7 @@ export default function ProfileSettingsPage() {
             />
             <Input
               label="Email Address"
-              value={profile.email}
+              value={user?.email || profile.email}
               disabled
               helperText="Managed by institutional single sign-on"
             />

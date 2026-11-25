@@ -12,7 +12,7 @@ export function FloatingPulseButton({ isOpen, onToggle }: FloatingPulseButtonPro
   return (
     <aside
       aria-label="Quick PULSE Assistant"
-      className="fixed right-6 bottom-24 md:right-12 lg:right-16 md:bottom-8 z-40 select-none print:hidden pointer-events-auto"
+      className="fixed right-4 bottom-20 md:right-6 md:bottom-6 z-40 select-none print:hidden pointer-events-auto"
     >
       <div className="relative group">
         {/* Subtle Ambient Pulse Wave Animation */}

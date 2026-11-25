@@ -17,6 +17,7 @@ export interface ProgressRingProps {
   textClassName?: string;
   // Legacy compatibility props for other callers
   strokeWidth?: number;
+  hideKnob?: boolean;
 }
 
 /**
@@ -36,6 +37,7 @@ export function ProgressRing({
   className,
   textClassName,
   strokeWidth,
+  hideKnob = false,
 }: ProgressRingProps) {
   const filterId = useId().replace(/:/g, "_");
   const clampedProgress = Math.min(100, Math.max(0, progress));
@@ -153,8 +155,8 @@ export function ProgressRing({
           transform={`rotate(-90 ${cx} ${cy})`}
         />
 
-        {/* 3. END KNOB: Liquid drop at the tip of the green arc with subtle shadow, hidden at 0% */}
-        {animatedProgress > 0 && (
+        {/* 3. END KNOB: Liquid drop at the tip of the green arc with subtle shadow, hidden at 0% or when hideKnob is true */}
+        {!hideKnob && animatedProgress > 0 && (
           <circle
             cx={knobX}
             cy={knobY}
@@ -171,18 +173,18 @@ export function ProgressRing({
         )}
       </svg>
 
-      {/* 4. CENTER TEXT: Semi-bold percentage (28-30px), smaller 55% sign, dark in light mode & white in dark mode */}
+      {/* 4. CENTER TEXT: Semi-bold percentage, smaller 55% sign */}
       {showText && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="flex items-baseline justify-center">
             <span
-              className={cn("font-bold text-[#1E1E22] dark:text-white tracking-tight leading-none", textClassName)}
+              className={cn("font-bold tracking-tight leading-none", textClassName || "text-[#1E1E22] dark:text-white")}
               style={{ fontSize: `${fontSizePx}px` }}
             >
               {Math.round(animatedProgress)}
             </span>
             <span
-              className={cn("font-bold text-[#1E1E22]/70 dark:text-white/90 leading-none ml-0.5", textClassName)}
+              className={cn("font-bold leading-none ml-0.5", textClassName ? `${textClassName} opacity-80` : "text-[#1E1E22]/70 dark:text-white/90")}
               style={{ fontSize: `${percentSizePx}px` }}
             >
               %

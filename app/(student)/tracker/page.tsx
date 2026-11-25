@@ -115,8 +115,10 @@ export default function TrackerPage() {
         <span>🗓️ <strong>Calendar Sync:</strong> Watchlist events can be exported as an <code>.ics</code> file for Google Calendar, Apple Calendar, and Outlook. Automatic two-way cloud synchronization is not configured.</span>
       </div>
 
-      {/* Pill Tabs with Counts (Lime active tab with white count circle) */}
-      <PillTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+      {/* Pill Tabs with Counts (Lime active tab for mobile & tablet) */}
+      <div className="lg:hidden">
+        <PillTabs tabs={tabs} activeTab={activeTab} onChange={setActiveTab} />
+      </div>
 
       {/* DESKTOP KANBAN VIEW (>=1024px) */}
       <div className="hidden lg:grid grid-cols-4 gap-4 pt-2">
@@ -128,76 +130,83 @@ export default function TrackerPage() {
 
           return (
             <div key={colStage} className="flex flex-col gap-3">
-              <div className="flex items-center justify-between p-2 rounded-2xl bg-black/5 dark:bg-white/5 px-4">
+              <div className="flex items-center justify-between p-2.5 rounded-2xl bg-black/5 dark:bg-white/5 px-4 border border-black/5 dark:border-white/5">
                 <span className="font-bold text-small text-[#1E1E22] dark:text-white capitalize">
                   {colStage}
                 </span>
-                <span className="w-6 h-6 rounded-full bg-white dark:bg-black/40 text-[11px] font-bold flex items-center justify-center">
+                <span className="w-6 h-6 rounded-full bg-white dark:bg-black/40 text-[11px] font-bold flex items-center justify-center text-[#1E1E22] dark:text-white shadow-xs">
                   {colApps.length}
                 </span>
               </div>
 
               <div className="flex flex-col gap-3">
-                {colApps.map((app) => (
-                  <Card key={app.id} variant="glass" className="p-4 flex flex-col gap-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="text-caption font-bold text-gray-500 uppercase">
-                        {app.opportunity?.type || "Opportunity"}
-                      </span>
-                      <span className="text-caption font-bold text-[#5BAE75]">
-                        {app.fit_score}% Fit
-                      </span>
-                    </div>
-
-                    <h4 className="text-body font-bold text-[#1E1E22] dark:text-white leading-snug">
-                      {app.opportunity?.title || "Prasunex Innovathon"}
-                    </h4>
-
-                    {/* Tasks checklist */}
-                    {app.tasks && app.tasks.length > 0 && (
-                      <div className="flex flex-col gap-1.5 pt-2 border-t border-black/5 dark:border-white/5">
-                        <span className="text-[11px] font-bold text-gray-400 uppercase">
-                          Action Checklist
+                {colApps.length === 0 ? (
+                  <div className="rounded-2xl border border-dashed border-black/10 dark:border-white/10 p-5 text-center flex flex-col items-center justify-center min-h-[120px] text-gray-400 select-none">
+                    <span className="text-caption font-semibold">No opportunities {colStage}</span>
+                    <span className="text-[11px] text-gray-400/80 mt-0.5">Tasks will appear here</span>
+                  </div>
+                ) : (
+                  colApps.map((app) => (
+                    <Card key={app.id} variant="glass" className="p-4 flex flex-col gap-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="text-caption font-bold text-gray-500 uppercase">
+                          {app.opportunity?.type || "Opportunity"}
                         </span>
-                        {app.tasks.slice(0, 3).map((task) => (
-                          <label
-                            key={task.id}
-                            className="flex items-center gap-2 cursor-pointer select-none text-caption text-[#1E1E22] dark:text-gray-300"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={task.completed}
-                              onChange={() => handleToggleTask(app.id, task.id)}
-                              className="w-3.5 h-3.5 rounded accent-[#1E1E22]"
-                            />
-                            <span className={task.completed ? "line-through text-gray-400" : ""}>
-                              {task.title}
-                            </span>
-                          </label>
-                        ))}
+                        <span className="text-caption font-bold text-[#5BAE75]">
+                          {app.fit_score}% Fit
+                        </span>
                       </div>
-                    )}
 
-                    <div className="pt-2 flex items-center justify-between border-t border-black/5 dark:border-white/5">
-                      <select
-                        value={app.stage}
-                        onChange={(e) => handleStageChange(app.id, e.target.value as any)}
-                        className="text-caption bg-transparent font-semibold text-gray-500 outline-none cursor-pointer"
-                      >
-                        <option value="saved">Move to Saved</option>
-                        <option value="preparing">Move to Preparing</option>
-                        <option value="applied">Move to Applied</option>
-                        <option value="done">Move to Done</option>
-                      </select>
+                      <h4 className="text-body font-bold text-[#1E1E22] dark:text-white leading-snug">
+                        {app.opportunity?.title || "Prasunex Innovathon"}
+                      </h4>
 
-                      <Link href={`/radar/${app.opportunity_id}`}>
-                        <Button variant="ghost" size="sm" className="p-1 h-7">
-                          <ChevronRight className="w-4 h-4" />
-                        </Button>
-                      </Link>
-                    </div>
-                  </Card>
-                ))}
+                      {/* Tasks checklist */}
+                      {app.tasks && app.tasks.length > 0 && (
+                        <div className="flex flex-col gap-1.5 pt-2 border-t border-black/5 dark:border-white/5">
+                          <span className="text-[11px] font-bold text-gray-400 uppercase">
+                            Action Checklist
+                          </span>
+                          {app.tasks.slice(0, 3).map((task) => (
+                            <label
+                              key={task.id}
+                              className="flex items-center gap-2 cursor-pointer select-none text-caption text-[#1E1E22] dark:text-gray-300"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={task.completed}
+                                onChange={() => handleToggleTask(app.id, task.id)}
+                                className="w-3.5 h-3.5 rounded accent-[#1E1E22]"
+                              />
+                              <span className={task.completed ? "line-through text-gray-400" : ""}>
+                                {task.title}
+                              </span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="pt-2 flex items-center justify-between border-t border-black/5 dark:border-white/5">
+                        <select
+                          value={app.stage}
+                          onChange={(e) => handleStageChange(app.id, e.target.value as any)}
+                          className="text-caption bg-transparent font-semibold text-gray-500 outline-none cursor-pointer"
+                        >
+                          <option value="saved">Move to Saved</option>
+                          <option value="preparing">Move to Preparing</option>
+                          <option value="applied">Move to Applied</option>
+                          <option value="done">Move to Done</option>
+                        </select>
+
+                        <Link href={`/radar/${app.opportunity_id}`}>
+                          <Button variant="ghost" size="sm" className="p-1 h-7">
+                            <ChevronRight className="w-4 h-4" />
+                          </Button>
+                        </Link>
+                      </div>
+                    </Card>
+                  ))
+                )}
               </div>
             </div>
           );

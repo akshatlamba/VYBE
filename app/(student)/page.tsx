@@ -55,13 +55,13 @@ export default function StudentHomePage() {
 
   return (
     <div className="flex flex-col gap-8 py-2">
-      {/* Actionable Hero Headline (No duplicate greeting) */}
+      {/* Actionable Hero Headline */}
       <div className="flex flex-col">
-        <h1 className="text-3xl sm:text-4xl md:text-display font-extrabold tracking-tight text-[#1E1E22] dark:text-white leading-[1.12]">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-medium tracking-tight text-[#1E1E22] dark:text-white leading-[1.15]">
           3 Deadlines This Week, <br />
-          <span className="font-bold text-[#1E1E22] dark:text-[#D3E57A]">4 Tasks To Go</span>
+          <span className="font-medium text-[#1E1E22] dark:text-white">4 Tasks To Go</span>
         </h1>
-        <p className="text-small sm:text-body text-[#4B5563] dark:text-[#D1D5DB] mt-2.5 font-medium max-w-xl leading-relaxed">
+        <p className="text-small sm:text-body text-[#6B7280] dark:text-[#D1D5DB] mt-2 font-normal max-w-xl leading-relaxed">
           Your World. Your Guide. Your Growth. Turn signals into actions.
         </p>
       </div>
@@ -82,25 +82,20 @@ export default function StudentHomePage() {
         ]}
       />
 
-      {/* VYBE Intelligence Graph: Signal to Growth Pipeline */}
-      <IntelligenceGraphViewer />
-
       {/* Section: World Pulse (Dated, Sourced Signals) */}
       <section className="flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#E0605E] animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-[#FB7185] shrink-0" />
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-[#1E1E22] dark:text-white">
               World Pulse
             </h2>
           </div>
-          {/* Restyled Ask PULSE Link: Brand Pill Button (No off-palette blue) */}
           <Link
             href="/pulse"
-            className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-[#1E1E22] text-white hover:bg-black/80 dark:bg-[#D3E57A] dark:text-[#1E1E22] dark:hover:bg-[#c5da62] text-caption font-semibold transition-all shadow-xs"
+            className="inline-flex items-center justify-center px-4 py-1.5 rounded-full bg-[#1E1E22] hover:bg-black text-white text-xs font-semibold transition-all shadow-xs"
           >
-            <span>Ask PULSE</span>
-            <ChevronRight className="w-3.5 h-3.5 stroke-[2.2]" />
+            Ask PULSE
           </Link>
         </div>
 
@@ -116,10 +111,10 @@ export default function StudentHomePage() {
               >
                 <div className="flex flex-col gap-2.5">
                   <div className="flex items-center justify-between text-caption font-medium text-[#4B5563] dark:text-[#D1D5DB]">
-                    <span className="font-semibold text-[#1E1E22] dark:text-gray-200">
+                    <span className="text-[11px] bg-black/5 dark:bg-white/10 px-2.5 py-0.5 rounded-full font-medium text-[#1E1E22] dark:text-gray-200">
                       {sig.source_name}
                     </span>
-                    <span className="text-[11px] bg-black/5 dark:bg-white/10 px-2.5 py-0.5 rounded-full font-medium">
+                    <span className="text-[11px] bg-black/5 dark:bg-white/10 px-2.5 py-0.5 rounded-full font-medium text-[#4B5563] dark:text-[#D1D5DB]">
                       {new Date(sig.published_at).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
@@ -249,6 +244,9 @@ export default function StudentHomePage() {
           ))}
         </div>
       </section>
+
+      {/* VYBE Intelligence Graph: Signal to Growth Pipeline */}
+      <IntelligenceGraphViewer />
     </div>
   );
 }
